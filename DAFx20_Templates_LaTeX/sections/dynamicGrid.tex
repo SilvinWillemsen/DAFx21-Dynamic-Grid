@@ -389,7 +389,7 @@ with $\lfloor N\rfloor \times \lfloor N\rfloor$ matrix
 Notice that when $\alpha$ approaches $1$, $\mathbf{B}$ will reduce to a matrix with ones on the diagonals next to the main diagonal and zeros elsewhere, which translates directly to the usual situation in Eq. \eqref{eq:updateEq} with $N = M + M_w + 1$. 
 
 \subsection{Implementation}
-Algorithm \ref{alg:calcOrder} shows the order of calculation to implement the method presented in this paper. Important is to only retrieve a change in $c$ at time index $n$ before all other calculations, so that $u_l^n$ and $w_l^n$ are calculated with the same $\alpha$ and $\beta$ time index $n$ for all $l$.
+Algorithm \ref{alg:calcOrder} shows the order of calculation to implement the method presented in this paper. Important is to only retrieve a change in $c$ at time index $n$ before all other, so that $u_l^n$ and $w_l^n$ are calculated with the same $\alpha$ and $\beta$ time index $n$ for all $l$.
 \begin{algorithm}[ht]
     \setstretch{1.25}
     \fbox{\parbox{0.8\linewidth}
