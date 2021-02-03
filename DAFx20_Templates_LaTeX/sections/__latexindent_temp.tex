@@ -1,0 +1,37 @@
+\begin{algorithm}[ht]
+    \setstretch{1.25}
+    \fbox{\parbox{0.9\linewidth}{
+     
+    \While{application is running}{
+    
+    \begin{minipage}[c]{0.9\linewidth}
+        Wavespeed $c$ is changed\\
+        Calc. $\lfloor N\rfloor$ (Eq. \eqref{eq:numberOfIntervals}) \\
+        \If{$\lfloor N^n\rfloor > \lfloor N^{n-1} \rfloor$}
+        {
+            Add point (Eq. \eqref{eq:addingPoint})\\
+            Update $M$ and $M_w$
+        }
+        \ElseIf{$\lfloor N^n\rfloor < \lfloor N^{n-1} \rfloor$}
+        {
+            Remove point (Eq. \eqref{eq:removingPoint})\\
+            Update $M$ and $M_w$
+        }
+        Calc. $\alpha$ and $\beta$ (Eqs. \eqref{eq:alphaDef} and \eqref{eq:betaDef})\\
+        Calc. scheme (Eq. \eqref{eq:totalSystem})\\
+        Retrieve output\\
+        Update states ($\U^{n-1} = \U^n$, $\U^n = \U^{n+1}$)
+    \end{minipage} 
+    % \begin{minipage}[c]{0.4\linewidth}
+    % -\\
+    % \vspace{2em}(Eq. \eqref{eq:addingPoint})\\
+    
+    % (Eq. \eqref{eq:removingPoint})\\
+
+    % \end{minipage}
+      }
+     }
+     }
+     \vspace{0.12cm}
+     \caption{Pseudocode showing the order of calculations.\label{alg:calcOrder}}
+\end{algorithm}

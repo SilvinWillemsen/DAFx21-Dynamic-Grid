@@ -1,0 +1,32 @@
+\section{Continuous Systems}\label{sec:continuous}
+%
+%going from a partial differential equation (PDE) to an update equation that can be implemented.
+%
+%using the famous 1D wave equation.
+%
+The physics of dynamic systems is commonly described using partial differential equations (PDEs) operating in continuous time. To aid the illustration of the proposed method, the 1D wave equation will be used. This does not mean that the method is limited to this, and could be extended to other (linear) systems, possibly even higher dimensional ones.
+
+The 1D wave equation may be written
+\begin{equation}\label{eq:1dwave}
+    \frac{\partial^2 u}{\partial t^2}= c^2\frac{\partial^2 u}{\partial x^2}\ ,
+\end{equation}
+and is defined over spatial domain $x \in [0, L]$, for length $L$ (in m) and time $t \geq 0$ (in s). $c$ (in m/s) is the wave speed. The dependent variable $u(x,t)$ in equation \eqref{eq:1dwave} may be interpreted as the transverse displacement of an ideal string, or the acoustic pressure in the case of a cylindrical tube. Two possible choices of boundary conditions are
+\begin{subequations}\label{eq:continuousBoundaries}
+    \begin{align}
+        u(0, t) = u(L, t) &= 0\quad \text{(Dirichlet)},\label{eq:contDirichlet}\\
+        \frac{\partial}{\partial x} u(0, t) = \frac{\partial}{\partial x} u(L, t) &= 0\quad \text{(Neumann)},\label{eq:contNeumann}
+    \end{align}
+\end{subequations}
+which describe a `fixed' and `free' boundary respectively in the case of an ideal string, and `open' and `closed' conditions respectively in the case of a cylindrical acoustic tube.
+
+\subsection{Dynamic parameters}\label{sec:dynamicParamsCont}
+In the case of the 1D wave equation, only the wave speed $c$ and length $L$ can be altered. If Dirichlet-type boundary conditions -- as in Eq. \eqref{eq:contDirichlet} -- are used, and under static conditions the fundamental frequency $f_0$ of the 1D wave equation can be calculated according to
+\begin{equation}\label{eq:fundamentalFreqCont}
+    f_0 = \frac{c}{2L}.
+\end{equation}
+In the dynamic case, and under slow (sub-audiorate) variations of $c$ or $L$, Eq. \eqref{eq:fundamentalFreqCont} still approximately holds.
+% \SBcomment[OK, but this notion of a frequency is only true under static conditions...kind of confusing] \SWcomment[Is it? It should be true for the dynamic case as well right?]\SBcomment[Well, I guess under slow variations, you can sort of say that there are still modes...but in general once you have time varying behaviour, you lose the ability to do Fourier analysis easily, and the modal analysis is not strictly correct] \SWcomment[Hmm.. but if this is true for any static combination of $c$ and $L$ (which it is right?) wouldn't it be true for the dynamic case as well?]\SBcomment[No way. It's approximately true for sub-audio rate variation in $c$. But once the variation gets higher, you will start to see AM effects (sidebands!).All modal analysis requires LTI behaviour. You can say that if the rate of variation of $c$ is sufficiently slow, then the modal frequencies above are approximately valid... ] \SWcomment[Ah of course, gotcha!]
+%
+From Eq. \eqref{eq:fundamentalFreqCont}, one can easily conclude that in terms of fundamental frequency, halving the length of Eq. \eqref{eq:1dwave} is identical to doubling the wave speed and vice versa. Looking at system \eqref{eq:1dwave} in isolation, $f_0$ is the only behaviour that can be changed. One can thus leave $L$ fixed %($L = 1$ for simplicity) 
+and make $c$ dynamic (or time-varying), i.e., $c = c(t)$, which will prove easier to work with in the following section.
+\SBcomment[OK: here, need to refer back to the two primary cases here: the trombone, and the string under variable tensioning, and justify the use of a time-varying $c$ only in these cases. Otherwise this becomes too abstract. ]

@@ -1,0 +1,54 @@
+\section{Dynamic Parameters}\label{sec:dynamicParams}
+This section describes how parameters could be made dynamic using FDTD methods and what this means for the simulation quality detailed in Section \ref{sec:quality}. %To clarify, for a parameter to be dynamic refers to its ability to vary over time while the simulation is running.  
+To clarify, a \textit{dynamic} parameter refers to one that is time-varying while the simulation is running. 
+
+% For the 1D wave equation used in Section \ref{sec:FDTD}, a property that could be interesting to make time-varying is the fundamental frequency $f_0$. If Dirichlet-type boundary conditions are used, as defined in Eqs. \eqref{eq:contDirichlet} and \eqref{eq:discreteDirichlet}, $f_0$ can be calculated according to
+% \begin{equation}\label{eq:fundamentalFreq}
+%     f_0 = \frac{c}{2L}\,.
+% \end{equation}
+% If $\lambda = 1$ in \eqref{eq:CFL} and thus condition \eqref{eq:stabilityCond} is satisfied with equality, $L/h$ in Eq. \eqref{eq:numberOfIntervals} is an integer and the flooring operation can be ignored. Substituting \eqref{eq:numberOfIntervals} into \eqref{eq:fundamentalFreq} yields
+% \begin{equation}
+%     f_0 = \frac{1}{2Nk}\ ,
+% \end{equation}
+% which shows that if $\lambda = 1$, $N$ solely decides the fundamental frequency of the simulation.
+
+Usually when simulating musical instruments, the parameters of individual FDSs are fixed for the entire simulation. For the 1D wave equation used in Section \ref{sec:continuous}, these are the wave speed $c$ and time step $k$ (calculated from the sample rate $f_\text{s}$) from which the grid spacing $h$ and Courant number $\lambda$ are calculated. On top of this, the length $L$ can be changed, but as elaborated on in Section \ref{sec:dynamicParamsCont}, this can be directly translated to a change in $c$ through the fundamental frequency $f_0$. As $f_\text{s}$ is rarely changed \SWcomment[due to all sorts of issues], the sole parameter that could be interesting to make time-varying is $c$. 
+% Modal synthesis is based on the addition of many sinusoids and is thus defined over the entire space. One can simply change the frequency of these sinusoids and 
+
+% \begin{equation}\label{eq:modalSum}
+%     u(x,t) = \sum_{m=1}^M C_m\sin(\omega_mt+\phi_m)\sin\Big(\frac{m\pi x}{L}\Big),
+% \end{equation}
+%
+% The amount of modes that can be included also depends on a stability condition, but it is much easier to work with. One simply excludes modes that do not satisfy this condition. 
+%
+% Using FDTD methods, one uses a discrete set number of points making it hard to transition from one setting to the next.
+As $c$ changes, several things need to be taken into account in a discrete setting. First of all, a change in $c$ causes a change in $\lambda$ according to Eq. \eqref{eq:compactLambda} affecting the simulation quality and bandwidth. Secondly, and more importantly, a change in $c$ could result in a change in $N$ through Eq. \eqref{eq:numberOfIntervals}. As $N$ directly relates to the number of grid points, this raises questions as to \textit{where} and especially \textit{how} one would add and remove points to the grid according to the now-dynamic wave speed.
+
+A solution to the latter is to set and fix $N$ at the beginning of the simulation and tune $c$ away from the stability condition by decreasing it, such as done in \cite{Willemsen2019}. This would avoid problems with stability, as decreasing $c$ would continue to satisfy condition \eqref{eq:CFL}, but the simulation would end up with lower quality, exhibiting dispersive and bandlimiting effects as discussed in Section \ref{sec:quality}. In essence, decreasing the value of $c$ immediately translates to decreasing the value of $\lambda$ as $h$ and $k$ are left unchanged. On top of this, $c$ is limited by Eq. \eqref{eq:CFL} and increasing it beyond a certain value would render the system unstable.
+
+The only way to circumvent the aforementioned undesirable effects such as dispersion and bandlimiting, is to somehow allow $N$ to be fractional or non-integer. This will remove the necessity of the flooring operation in Eq. \eqref{eq:numberOfIntervals} and Eq. \eqref{eq:compactLambda}, and will consequently satisfy the CFL condition in \eqref{eq:CFL} with equality at all times. Eq. \eqref{eq:fundamentalFreqCont} can then be rewritten in terms of $N$ by substituting Eq. \eqref{eq:numberOfIntervals} into Eq. \eqref{eq:fundamentalFreqCont} (using Eq. \eqref{eq:stabilityCond} satisfied with equality) yielding
+\begin{equation}\label{eq:fundamentalFreq}
+    f_0 = \frac{1}{2Nk}\ .
+\end{equation}
+This shows that if $\lambda = 1$, $N$, which is now not necessarily an integer, solely decides the fundamental frequency of the simulation. 
+
+Even if a fractional $N$ would be possible, this still leaves the question of where and how to add and remove points to and from the grid. Furthermore, this change in grid size needs to happen in a smooth fashion so as not to create audible artefacts. 
+%. To implement a physical model with dynamic parameters and an optimal simulation quality at all times,
+This paper proposes a method that allows for a fractional $N$ and smoothly changes grid configurations \SWcomment[$\leftarrow$ elaborate on the fact that this means ``number of grid points"?] which the following section will describe. %The following section describes the requirements for such a method to successfully do this.
+
+% Section \ref{sec:quality} shows several arguments for why these parameters should be fixed. The stability of the simulation relies on the parameters of the scheme and needs to be satisfied as close to the condition  When the stability condition is calculated,
+
+% In this case we could initialise the system to have a wave speed of $c = 300$ m/s and a sample rate of $f_\text{s} = 44100$ Hz yielding $N = 147$ and $lambda = 1$ (satisfying condition \eqref{eq:CFL} with equality.
+
+% Essentially $c$ is made time-varying / dynamic / changed on the fly $c^n$
+% \subsection{Connection between $c$ and $L$ \SWcomment[(might be better as an appendix)]}\label{sec:f0}
+% If Dirichlet-type boundary conditions are used, as defined in Eqs. \eqref{eq:contDirichlet} and \eqref{eq:discreteDirichlet}, the fundamental frequency $f_0$ of the 1D wave equation can be calculated according to
+% \begin{equation}
+%     f_0 = \frac{c}{2L}\,,
+% \end{equation}
+% from which one can see that, in terms of fundamental frequency a halving the length is identical to doubling the wave speed. 
+% If $\lambda = 1$ in \eqref{eq:CFL} and thus condition \eqref{eq:stabilityCond} is satisfied with equality, $L/h$ in Eq. \eqref{eq:numberOfIntervals} is an integer and the flooring operation can be ignored. Substituting \eqref{eq:numberOfIntervals} into \eqref{eq:fundamentalFreq} yields
+% \begin{equation}
+%     f_0 = \frac{1}{2Nk}\ ,
+% \end{equation}
+% which shows that if $\lambda = 1$, $N$ solely decides the fundamental frequency of the simulation.
