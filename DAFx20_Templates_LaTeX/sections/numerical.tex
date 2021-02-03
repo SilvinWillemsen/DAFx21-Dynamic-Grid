@@ -55,15 +55,16 @@ Discretising continuous equations using numerical methods places limits on the p
     \lambda \leq 1,
 \end{equation}
 which is referred to as the Courant-Friedrichs-Lewy (CFL) stability condition \cite{Strikwerda1989}. The closer $\lambda$ is to this condition, the higher the quality of the simulation (see Section \ref{sec:quality}) and if $\lambda = 1$, Eq. \eqref{eq:updateEq} provides an exact solution to Eq. \eqref{eq:1dwave} %(this is true for the 1D wave equation)
-(see Figures \ref{fig:lambda1} and \ref{fig:lambda0.9}). If $\lambda > 1$ the system will become unstable (see Figure \ref{fig:lambda1.001}).
-\begin{figure*}[ht]
+(see Figures \ref{fig:dispersion}a and \ref{fig:dispersion}b). If $\lambda > 1$ the system will become unstable (see Figure \ref{fig:dispersion}c).
+\begin{figure}[t]
     \centering
-    \subfloat[]{\label{fig:lambda1}{ \includegraphics[width=0.3\textwidth]{Figures/ulnLambda1.eps}}}
-    \subfloat[]{\label{fig:lambda0.9}{ \includegraphics[width=0.3\textwidth]{Figures/ulnLambda09.eps}}}
-    \subfloat[]{\label{fig:lambda1.001}{ \includegraphics[width=0.3\textwidth]{Figures/ulnLambda1001.eps}}}
+    % \subfloat[]{\label{fig:lambda1}{ \includegraphics[width=0.3\textwidth]{Figures/ulnLambda1.eps}}}
+    % \subfloat[]{\label{fig:lambda0.9}{ \includegraphics[width=0.3\textwidth]{Figures/ulnLambda09.eps}}}
+    % \subfloat[]{\label{fig:lambda1.001}{ \includegraphics[width=0.3\textwidth]{Figures/ulnLambda1001.eps}}}
+    \includegraphics[width=0.8\columnwidth]{Figures/dispersionCompact.eps}
     \caption{State $u_l^n$ with $N = 50$ and $f_\text{s} = 44100$ visualised $\sim\!100$ samples after excitation. (a) If $\lambda = 1$, the solution is exact. (b) If $\lambda < 1$ dispersive behaviour shows. (c) If $\lambda > 1$ the CFL condition in Eq. \eqref{eq:CFL} is not satisfied and the system is unstable.
     \label{fig:dispersion}}
-\end{figure*}
+\end{figure}
 
 % discrete boundaries here?
 Recalling \eqref{eq:lambdaDef} can rewrite Eq. \eqref{eq:CFL} in terms of grid spacing $h$ to get
@@ -83,17 +84,18 @@ The flooring operation causes the CFL condition in \eqref{eq:CFL} to not always 
 \subsection{Simulation Quality}\label{sec:quality}
 As mentioned above, the Courant number $\lambda$ decides the quality of the simulation. Choosing $\lambda < 1$ will decrease this quality in two ways. Firstly, it will decrease the maximum frequency that the simulation is able to produce, i.e., it will decrease the bandwidth of the output sound of the system. See Figure \ref{fig:bandWidths}.
 
-\begin{figure*}[ht]
+\begin{figure}[t]
     \centering
-    \subfloat[]{\label{fig:bandwidth1}{ \includegraphics[width=0.3\textwidth]{Figures/bandwidthLambda1.eps}}}
-    \subfloat[]{\label{fig:bandwidth09}{ \includegraphics[width=0.3\textwidth]{Figures/bandwidthLambda09.eps}}}
-    \subfloat[]{\label{fig:bandwidth05}{ \includegraphics[width=0.3\textwidth]{Figures/bandwidthLambda05.eps}}}
+    % \subfloat[]{\label{fig:bandwidth1}{ \includegraphics[width=0.3\textwidth]{Figures/bandwidthLambda1.eps}}}
+    % \subfloat[]{\label{fig:bandwidth09}{ \includegraphics[width=0.3\textwidth]{Figures/bandwidthLambda09.eps}}}
+    % \subfloat[]{\label{fig:bandwidth05}{ \includegraphics[width=0.3\textwidth]{Figures/bandwidthLambda05.eps}}}
+    \includegraphics[width=0.9\columnwidth]{Figures/bandwidthCompact.eps}
     \caption{Bandwidths of the simulation output %at $l = 16$ 
     with $f_\text{s} = 44100$ Hz and 
     %$N = 50$ excited with a raised cosine with a width of 5 at center-location $N = 25$. The Courant number is set to 
     (a) $\lambda = 1$, (b) $\lambda = 0.9$ and (c) $\lambda = 0.5$. 
     \label{fig:bandWidths}}
-\end{figure*}
+\end{figure}
 %
 By analysing the scheme in Eq. \eqref{eq:updateEq}, it can be shown that the maximum frequency produced by the system can be calculated using \cite[Chap. 6]{bilbao2009}
 \begin{equation}\label{eq:fmax}
@@ -109,6 +111,6 @@ Note that only a small deviation of $\lambda$ from condition \eqref{eq:CFL} alre
 % \includegraphics[width=0.8\reprintcolumnwidth]{bandwidthPlot}
 % \caption{\label{fig:bandWidthFormula}{The effect of the Courant number $\lambda$ on the output bandwidth. \SWcomment[This figure should probably be much more compact, if not removed altogether.]}}
 % \end{figure} 
-Secondly, choosing $\lambda < 1$ causes numerical dispersion. See Figures \ref{fig:lambda0.9} and \ref{fig:bandWidths}. Harmonic partials get closer together at higher frequencies (i.e. get more inharmonic) as $\lambda$ decreases, which is generally undesirable.
+Secondly, choosing $\lambda < 1$ causes numerical dispersion. See Figures \ref{fig:dispersion}b and \ref{fig:bandWidths}. Harmonic partials get closer together at higher frequencies (i.e. get more inharmonic) as $\lambda$ decreases, which is generally undesirable.
 
 Apart from the recalculation of $\lambda$ due to the flooring operation in Eq. \eqref{eq:orderOfCalcGrid}, a reason that one would choose $\lambda < 1$ could be to decrease the total number of grid points used in the simulation by increasing $h$. This makes the simulation less computationally expensive, while keeping a desired wave speed $c$ and time step $k$. For 1-dimensional systems such as the 1D wave equation, this is rarely necessary.
