@@ -10,12 +10,9 @@ Ideally, a method that dynamically changes the grid size of finite-difference sc
 \begin{enumerate}
     \item generate an output with a fundamental frequency $f_0$ %described by Eq. \eqref{eq:fundamentalFreq} 
     which is linearly proportional to $c$ ($f_0 \propto c$),
-    \item allow for a fractional $N$ to smoothly transition 
-    %between different $f_0$s,
-    %\item smoothly transition 
-    between different grid configurations so that no auditory artefacts are present in the output sound,
-    \item generate an output containing harmonic partials -- or modes -- which are integer multiples of the fundamental ($f_p = f_0 p$ with integer $p$),
-    \item generate an output with $\lfloor N\rfloor-1$ modes corresponding to the number of moving points of the system ($p = [1, \hdots, \allowbreak\lfloor N\rfloor-1]$),
+    \item allow for a fractional $N$ to smoothly transition between different grid configurations% so that no auditory artefacts are present in the output sound,
+    \item generate an output containing $\lfloor N\rfloor-1$ modes which are integer multiples of the fundamental ($f_p = f_0 p$ with integer $p$),
+    % \item generate an output with $\lfloor N\rfloor-1$ modes corresponding to the number of moving points of the system ($p = [1, \hdots, \allowbreak\lfloor N\rfloor-1]$),
     \item work in real time.
 \end{enumerate}
 The last requirement is an optional one, but in order for the final implementation to be ``playable'', this is necessary. 
@@ -310,8 +307,10 @@ Removing grid points happens when $c$, and consequently $h$, is increased and $x
      \mathbf{w}^n = [w_1^n, w_2^n ..., w_{M_w}^n]^T & \text{if $N^n$ is odd}.
     \end{cases}
 \end{equation}
+Until now, only adding and removing points in the center of the system has been considered. This location could be moved anywhere along the grid, the limit being one point from the boundary. In other words, both $u_l^n$ and $w_l^n$ need to have at least one point (excluding the outer boundaries). Furthermore, one does not have to add and remove points from $\mathbf{u}$ and $\mathbf{w}$ in an alternating fashion as in \eqref{eq:addingPoint}, but can just add and remove from (fx.) $\mathbf{u}$ leaving $\mathbf{w}$ the same size throughout the simulation. In the extreme case where $M = \lfloor N\rfloor - 1$ and $M_w = 1$ (leaving $w_l^n$ with only one moving grid point, $w_0^n$) the method still works.
 
-A problem that arises from increasing $h$, is that it is possible that $u_M^n \not\approx w_0^n$ at the time when a grid point needs to be removed. As $x_{u_M}^n \approx x_{w_0}^n$ at the time of removal (except for extremely quick parameter variations), this violates the rigid connection in \eqref{eq:rigid} and causes audible artefacts. A method of displacement correction is proposed that decreases the relative displacement of the inner boundaries the closer their grid-locations are together, i.e., the closer $\alpha$ in \eqref{eq:alphaDef} is to 0:
+\subsubsection{Displacement correction}\label{sec:dispCorr}
+A problem that arises from increasing $h$, is that it is possible that $u_M^n \not\approx w_0^n$ at the time when a grid point needs to be removed. As $x_{u_M}^n \approx x_{w_0}^n$ at the time of removal (except for extremely quick parameter variations), this violates the rigid connection in \eqref{eq:rigid} and causes audible artefacts. A method is proposed that decreases the relative displacement of the inner boundaries the closer their grid-locations are together, i.e., the closer $\alpha$ in \eqref{eq:alphaDef} is to 0:
 \begin{equation}\label{eq:dispCorr}
     \begin{aligned}
     u_M^n := u_M^n +\beta (w_0^n - u_M^n),\\
@@ -324,7 +323,6 @@ with
 \end{equation}
 where $\epsilon \geq 1$ is a tunable parameter. A lower $\epsilon$ decreases the chance of artifacts but will have a greater filtering effect on the system. For low-speed changes, using $\sim 1000$ samples for removing one grid point, $\epsilon \approx 30$ ensures that $u_M^n \approx w_0^n$ at the time of removal and already suffices to remove artefacts.
 
-Until now, only adding and removing points in the center of the system has been considered. This location could be moved anywhere along the grid, the limit being one point from the boundary. In other words, both $u_l^n$ and $w_l^n$ need to have at least one point (excluding the outer boundaries). Furthermore, one does not have to add and remove points from $\mathbf{u}$ and $\mathbf{w}$ in an alternating fashion as in \eqref{eq:addingPoint}, but can just add and remove from (fx.) $\mathbf{u}$ leaving $\mathbf{w}$ the same size throughout the simulation. In the extreme case where $M = \lfloor N\rfloor - 1$ and $M_w = 1$ (leaving $w_l^n$ with only one moving grid point, $w_0^n$) the method still works.
 % 
 % \SWcomment[The following applies to odd-ordered Lagrange interpolators $\rightarrow$] The location at where points are added and removed greatly influences the behaviour of the system, especially in the higher frequencies (see Section \ref{sec:results}). The best behaviour is obtained when the location is as close to a boundary as possible. 
 
