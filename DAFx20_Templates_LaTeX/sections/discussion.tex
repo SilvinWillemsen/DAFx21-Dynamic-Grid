@@ -5,13 +5,13 @@ It can be argued that the frequency deviations of $f_1$ from $f_0$ are sufficien
 
 The modal analysis in Figure \ref{fig:modalAnalysis} shows that method generates $\lfloor N\rfloor$ rather than $\lfloor N\rfloor - 1$ modes as set by requirement 3. However, the output does contain the correct number of modes as shown in Figure \ref{fig:spectrogram} due to the highest mode not being excited. This is probably a result of the rigid connection imposed on the inner boundaries, forcing them to have the same displacement. As mentioned in the results, when the system is excited at a non-integer $N$, the highest mode is excited due to the fact that the inner boundaries can have different displacements in that case.
 
-The latter part of requirement 3 is not satisfied. The modes deviate from integer multiples of $f_0$, moreso for higher modes. Most implementations contain much more points than the one tested on here and as the deviations are less for higher $N$, this 
+The latter part of requirement 3 is not satisfied. The modes deviate from integer multiples of $f_0$, moreso for higher modes. Luckily, deviations decrease as $N$ increases and most implementations contain much more points than the one tested on here. 
 
-The method only adds a few extra calculations for the inner boundaries so requirement 4 is also satisfied. 
+The method only adds a few extra calculations for the inner boundaries so requirement 4 is also easily satisfied. 
 
 % The fact that identical behaviour is observed at integer $N$ proves that at integer $N$ the method indeed reduces to the normal case confirming Section \ref{sec:systSetup}. If the system is excited when $N$ is not an integer, the highest mode will also be excited.
 
-All issues with the proposed method happen in higher frequencies. Physical processes usually lose the highest frequencies first so modes with higher frequencies usually do not have high amplitudes.
+The method has been tested The issues with the proposed method happen in higher frequencies. Physical processes usually lose the highest frequencies first so modes with higher frequencies usually do not have high amplitudes.
 
 Regarding the displacement correction the best consistent low-passing effect regardless of the number of points, it is wise to add and remove points as close to the boundary as possible
 
