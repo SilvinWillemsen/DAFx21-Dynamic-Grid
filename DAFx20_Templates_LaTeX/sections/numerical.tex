@@ -6,7 +6,7 @@ Using FDTD methods, the continuous 1D wave equation in Eq. \eqref{eq:1dwave} can
 \begin{equation}\label{eq:numberOfIntervals}
     N = \lfloor L/h\rfloor,
 \end{equation}
-with $\lfloor \cdot \rfloor$ denoting the flooring operation. The temporal variable can be discretised using $t_n = nk$ with positive integer $n$, time step $k = 1/f_\text{s}$ (in s) and sample rate $f_\text{s}$ (in Hz). The state variable $u$ can then be approximated using $u(x,t) \approx u_l^n$, where grid function $u_l^n$ is ``the displacement of $u$ at spatial index $l$ and time index $n$". The total state at time index $n$ is then denoted as vector $\mathbf{u}^n$ with size $N+1$.
+with $\lfloor \cdot \rfloor$ denoting the flooring operation. The temporal variable can be discretised using $t_n = nk$ with positive integer $n$, time step $k = 1/f_\text{s}$ (in s) and sample rate $f_\text{s}$ (in Hz). The state variable $u$ can then be approximated using $u(x,t) \approx u_l^n$, where grid function $u_l^n$ is the displacement of $u$ at spatial index $l$ and time index $n$. %The total state at time index $n$ is then denoted as vector $\mathbf{u}^n$ with size $N+1$.
 
 The following operators can then be applied to $u_l^n$ to get the following approximations to the derivatives in Eq. \eqref{eq:1dwave}
 \begin{subequations}\label{eq:operators}
@@ -50,11 +50,11 @@ is a second-order accurate approximation of the first-order spatial derivative. 
 Now that the full system is described, the output sound can be retrieved by `recording' the state $u_l^n$ in Eq. \eqref{eq:updateEq} at $0 < l < N$ (when using fixed boundary conditions) and listening to that at the given sample rate $f_\text{s}$. Though the output location does not change the behaviour of the system, it will determine the amplitude of different harmonic partials in the system output.
 
 \subsection{Stability}\label{sec:stability}
-Discretising continuous equations using numerical methods places limits on the parameters describing it. A wrong choice of parameters could render the system unstable and make it ``explode". In the case of the update in Eq. \eqref{eq:updateEq} it can be shown -- using Von Neumann analysis -- that the system is stable if
+Discretising continuous equations using numerical methods places limits on the parameters describing it. A wrong choice of parameters could render the system unstable and make it ``explode". In the case of the update in Eq. \eqref{eq:updateEq} it can be shown -- using Von Neumann analysis \cite{Strikwerda1989} -- that the system is stable if
 \begin{equation}\label{eq:CFL}
     \lambda \leq 1,
 \end{equation}
-which is referred to as the Courant-Friedrichs-Lewy (CFL) stability condition \cite{Strikwerda1989}. The closer $\lambda$ is to this condition, the higher the quality of the simulation (see Section \ref{sec:quality}) and if $\lambda = 1$, Eq. \eqref{eq:updateEq} provides an exact solution to Eq. \eqref{eq:1dwave} %(this is true for the 1D wave equation)
+which is referred to as the Courant-Friedrichs-Lewy (CFL) stability condition. The closer $\lambda$ is to this condition, the higher the quality of the simulation (see Section \ref{sec:quality}) and if $\lambda = 1$, Eq. \eqref{eq:updateEq} provides an exact solution to Eq. \eqref{eq:1dwave} %(this is true for the 1D wave equation)
 (see Figures \ref{fig:dispersion}a and \ref{fig:dispersion}b). If $\lambda > 1$ the system will become unstable (see Figure \ref{fig:dispersion}c).
 \begin{figure}[t]
     \centering
@@ -113,4 +113,4 @@ Note that only a small deviation of $\lambda$ from condition \eqref{eq:CFL} alre
 % \end{figure} 
 Secondly, choosing $\lambda < 1$ causes numerical dispersion. See Figures \ref{fig:dispersion}b and \ref{fig:bandWidths}. Harmonic partials get closer together at higher frequencies (i.e. get more inharmonic) as $\lambda$ decreases, which is generally undesirable.
 
-Apart from the recalculation of $\lambda$ due to the flooring operation in Eq. \eqref{eq:orderOfCalcGrid}, a reason that one would choose $\lambda < 1$ could be to decrease the total number of grid points used in the simulation by increasing $h$. This makes the simulation less computationally expensive, while keeping a desired wave speed $c$ and time step $k$. For 1-dimensional systems such as the 1D wave equation, this is rarely necessary.
+\SWcomment[can cut this paragraph $\rightarrow$] Apart from the recalculation of $\lambda$ due to the flooring operation in Eq. \eqref{eq:orderOfCalcGrid}, a reason that one would choose $\lambda < 1$ could be to decrease the total number of grid points used in the simulation by increasing $h$. This makes the simulation less computationally expensive, while keeping a desired wave speed $c$ and time step $k$. For 1-dimensional systems such as the 1D wave equation, this is rarely necessary.

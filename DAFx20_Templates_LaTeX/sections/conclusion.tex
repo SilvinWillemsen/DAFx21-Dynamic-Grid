@@ -1,11 +1,16 @@
-\section{Conclusion and Future Work}
-This paper presents a method to dynamically change grids of finite difference schemes
+\section{Conclusions and Future Work}\label{sec:conclusion}
+This paper presents a method to change grid configurations of finite difference schemes to allow for dynamic parameters
 
 
 The proposed method might not provide the exact solution to the problem, but does circumvent the need for upsampling and higher orders of computations necessary to approximate this solution. Even though interpolation needs to happen, the drawbacks of full-grid interpolation can be avoided by not `listening' to the location where points are added but rather closer to the boundary. If one wants to listen to the center, the location where points are added or removed can easily be changed.
 
-The 1D wave equation is used as a test case, but the method could be used for other systems as well. 
+% The 1D wave equation was used as a test case, but the method could be used for other systems as well. 
+Though this method has only been presented using the 1D wave equation it could be applied to many other 1D FDSs. 
+
+
+Finally, an applications that will be investigated is the case of non-linear systems where parameters are modulated based on the state of the system. 
 
 
 Future work includes creating an adaptive version of the displacement correction that changes its effect depending on the speed at which the grid is changed.
 
+Stability and energy analyses will have to be performed to test the limits on parameter / grid changes.
