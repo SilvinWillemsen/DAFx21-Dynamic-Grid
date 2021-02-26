@@ -324,7 +324,7 @@ with
 \begin{equation}\label{eq:betaDef}
     \beta(\epsilon) = \frac{(1-\alpha)^\epsilon}{2}
 \end{equation}
-where $\epsilon \geq 1$ is a tunable parameter. A lower $\epsilon$ decreases the chance of artifacts but will have a greater filtering effect on the system. For low-speed changes, using $\sim 1000$ samples for removing one grid point, $\epsilon \approx 30$ ensures that $u_M^n \approx w_0^n$ at the time of removal and already suffices to remove artefacts.
+where $\epsilon \geq 1$ is a tunable parameter. $\beta$ can be seen as a spring force pulling the inner boundaries to the average displacement between them. A lower $\epsilon$ decreases the chance of artifacts but will have a greater filtering effect on the system. For low-speed changes, using $\sim 1000$ samples for removing one grid point, $\epsilon \approx 30$ ensures that $u_M^n \approx w_0^n$ at the time of removal and already suffices to remove artefacts.
 
 % 
 % \SWcomment[The following applies to odd-ordered Lagrange interpolators $\rightarrow$] The location at where points are added and removed greatly influences the behaviour of the system, especially in the higher frequencies (see Section \ref{sec:results}). The best behaviour is obtained when the location is as close to a boundary as possible. 
@@ -346,7 +346,7 @@ The inner boundaries are calculated using
 \begin{subequations}
     \begin{align}
         u_M^{n+1} &= u_{M+1}^n + u_{M-1}^n - u_M^{n-1},\\
-        w_0^{n+1} &= w_{-1}^n + w_{2}^n - w_0^{n-1}.
+        w_0^{n+1} &= w_{-1}^n + w_{1}^n - w_0^{n-1}.
     \end{align}
 \end{subequations}
 %
