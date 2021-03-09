@@ -18,12 +18,30 @@ This section shows the analysis of the system presented in the previous section 
 
 % % \subsection{Dynamic}
 %For a more detailed look at the behaviour of the system when $c$ is changed dynamically, 
-A modal analysis can be performed on system \eqref{eq:totalSystem}. For static parameters, the modal frequency of the $p$'th mode can be retrieved as
-\begin{equation}\label{eq:modalAnalysis}
-    f_p = \frac{1}{2\pi k}\cos^{-1}\left(\frac{1}{2}\text{eig}_p(\mathbf{B})\right),
+Rewriting \eqref{eq:totalSystem} in one-step form \cite{bilbao2009}, 
+\begin{equation}\label{eq:oneStepForm}
+    \begin{bmatrix}
+        \U^{n+1}\\
+        \U^n
+    \end{bmatrix} = 
+    \underbrace{\begin{bmatrix}
+        \mathbf{C}_+^{-1}\mathbf{B} & \mathbf{C}_+^{-1}\mathbf{C}_-\\
+        \mathbf{I} & \mathbf{0}
+    \end{bmatrix}}_{\mathbf{Q}}
+    \begin{bmatrix}
+        \U^n\\
+        \U^{n-1}
+    \end{bmatrix}
 \end{equation}
-and still holds for slow variations of $c$.
-As a test case, the wave speed of a system running at $f_\text{s} = 44100$ Hz is dynamically varied from $c = 2940$ ($N = 15$) to $c = 2205$ ($N = 20$), changing $\mathbf{B}$ and thus the modal frequencies over time. The displacement correction presented in Section. \ref{sec:dispCorr} is not included in this analysis ($\epsilon \gg 1$), but will be elaborated on in Section \ref{sec:dispCorrRes}. The results of the analysis are shown in Figure \ref{fig:modalAnalysis}. Figure \ref{fig:spectrogram} shows the resulting spectrogram of the system excited at $n=0$ with a narrow raised cosine and the output retrieved at $u_1^n$.
+allows for a modal analysis to be performed. For static parameters, the complex frequency of the $p$'th mode can be retrieved as
+\begin{equation}\label{eq:modalAnalysis}
+    s_p = \frac{1}{k}\ln \left(\text{eig}_p(\mathbf{Q})\right),
+\end{equation}
+where the frequency (in Hz) and damping (in $s^{-1}$) of the $p$'th mode can be retrieved using 
+\begin{equation}
+    f_p = \mathfrak{I}(s_p)/2\pi \quad \text{and} \quad \sigma_p = \mathfrak{R}(s_p)
+\end{equation}
+respectively. Here, $\mathfrak{I}(\cdot)$ and $\mathfrak{R}(\cdot)$ denote the `imaginary' and `real part of'. These definitions still hold for slow variations of $c$. As a test case, the wave speed of a system running at $f_\text{s} = 44100$ Hz is dynamically varied from $c = 2940$ ($N = 15$) to $c = 2205$ ($N = 20$), changing $\mathbf{Q}$ and thus the modal frequencies over time. The displacement correction presented in Section. \ref{sec:dispCorr} is not included in this analysis ($\epsilon \gg 1$), but will be elaborated on in Section \ref{sec:dispCorrRes}. The results of the analysis are shown in Figure \ref{fig:modalAnalysis}. Figure \ref{fig:spectrogram} shows the resulting spectrogram of the system excited at $n=0$ with a narrow raised cosine and the output retrieved at $u_1^n$.
 
 \begin{figure}[t]
     \centering
@@ -59,6 +77,7 @@ When an implementation of the system using this method with integer $N$ (static)
 Using the quadratic interpolation from \eqref{eq:connectionInterpol}, or any other even-ordered Lagrange interpolator for that matter, the modal behaviour of the system does not change based on location. Experiments done with odd-ordered Lagrange interpolators showed that better behaviour is observed when points are added / removed closer to the boundaries. 
 
 \subsection{Displacement Correction}\label{sec:dispCorrRes}
+$\omega_0 = \sigma_0 = 1$
 As mentioned in Section \ref{sec:dispCorr}, the displacement correction works with low-speed parameter changes and indeed removes artefacts when grid points are removed. Analysis of a static system with non-integer $N$ does, however, show that the correction has a low-pass comb-filtering effect on the system. The filtering is stronger for a lower values of $\epsilon$ and $\alpha$. The location and amount of the notches is determined by the location of the inner boundaries along the grid, i.e., where along the grid the displacement correction is applied. The amount of notches is equal to $\text{min}(M, M_w)$.
 %Notches appear at ca. $m_\text{f}f_\text{s}/{2M_\text{min}}$ Hz and undamped frequencies right in between those, where notch number $m_\text{f} = [1, \hdots, M_\text{min}]$ and $M_\text{min} = \text{min}(M,M_w)$ is the minimum distance in points between the boundary and the location of adding and removing. 
 For a dynamic system, the notches move around the frequency spectrum and overall yield a low-passing effect.
