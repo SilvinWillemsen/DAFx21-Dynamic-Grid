@@ -4,7 +4,7 @@
 %
 %using the famous 1D wave equation.
 %
-The physics of dynamic systems is commonly described using partial differential equations (PDEs) operating in continuous time. To aid the illustration of the proposed method, the 1D wave equation will be used. This does not mean that the method is limited to this, and could be extended to other (linear) systems, possibly even higher dimensional ones.
+The physics of dynamic systems is commonly described using partial differential equations (PDEs) operating in continuous time. To aid the illustration of the proposed method, the 1D wave equation will be used. This does not mean that the method is limited to this, and could be extended to other systems, possibly even higher dimensional ones.
 
 The 1D wave equation may be written
 \begin{equation}\label{eq:1dwave}
@@ -29,4 +29,4 @@ In the dynamic case, and under slow (sub-audiorate) variations of $c$ or $L$, Eq
 %
 From Eq. \eqref{eq:fundamentalFreqCont}, one can easily conclude that in terms of fundamental frequency, halving the length of Eq. \eqref{eq:1dwave} is identical to doubling the wave speed and vice versa. Looking at Eq. \eqref{eq:1dwave} in isolation, $f_0$ is the only behaviour that can be changed. One can thus leave $L$ fixed %($L = 1$ for simplicity) 
 and make $c$ dynamic (or time-varying), i.e., $c = c(t)$, which will prove easier to work with in the following section.
-\SBcomment[OK: here, need to refer back to the two primary cases here: the trombone, and the string under variable tensioning, and justify the use of a time-varying $c$ only in these cases. Otherwise this becomes too abstract. ]
+\SBcomment[OK: here, need to refer back to the two primary cases here: the trombone, and the string under variable tensioning, and justify the use of a time-varying $c$ only in these cases. Otherwise this becomes too abstract. ] {\color{Cyan} I feel like I need to talk about scaling here and how this confirms this statement ($f_0 = \gamma/2$ with $\gamma = c/L$ and scaled space $x \in [0, 1]$).}
