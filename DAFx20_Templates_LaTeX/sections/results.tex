@@ -44,21 +44,13 @@ where the frequency (in Hz) and damping (in $s^{-1}$) of the $p$'th mode can be 
 respectively. Here, $\mathfrak{I}(\cdot)$ and $\mathfrak{R}(\cdot)$ denote the `imaginary' and `real part of'. These definitions still hold for slow variations of $c$. As a test case, the wave speed of a system running at $f_\text{s} = 44100$ Hz is dynamically varied from $c = 2940$ ($N = 15$) to $c = 2205$ ($N = 20$), changing $\mathbf{Q}$ and thus the modal frequencies over time. %The displacement correction presented in Section. \ref{sec:dispCorr} is not included in this analysis ($\epsilon \gg 1$), but will be elaborated on in Section \ref{sec:dispCorrRes}. 
 The results of the analysis are shown in Figure \ref{fig:modalAnalysis}. Figure \ref{fig:spectrogram} shows the resulting spectrogram of the system excited at $n=0$ with a narrow raised cosine and the output retrieved at $u_1^n$.
 
-\begin{figure}[t]
+\begin{figure}[ht!]
     \centering
-%% \reprintcolumnwidth is the same in preprint and reprint for
-%% ease of use for authors:
-\includegraphics[width=\figwidth\columnwidth]{Figures/modalAnalysisDamping.eps}
-\caption{\label{fig:modalAnalysis}{Modal analysis of system \eqref{eq:oneStepForm} using \eqref{eq:modalAnalysis} with $M = \lfloor N\rfloor - 1$ and $M_w = 1$ running at $f_\text{s} = 44100$ Hz. The wave speed is reduced from $c = 2940$ ($N = 15$) to $c = 2205$ ($N = 20$). Higher damping values are shown with thinner (and bluer) lines.}}
-\end{figure} 
-\begin{figure}[t]
-    \centering
-%% \reprintcolumnwidth is the same in preprint and reprint for
-%% ease of use for authors:
-\includegraphics[width=\figwidth\columnwidth]{Figures/spec15-20-15.eps}
-\caption{\label{fig:spectrogram}{Output of the system retrieved at $u_1^n$ excited using $u_1^n = 1$ at $n = 0$ and $n = 5f_\text{s}$. The wave speed $c$ changes to get $N = 15$ at $t=0$, $N = 20$ at $t=5$ and $N = 15$ at $t=10$. The displacement correction is only activated when $N$ decreases. The modes follow the same pattern as predicted by the analysis shown in Figure \ref{fig:modalAnalysis}.}}
-\end{figure} 
-
+    \subfloat[]{\label{fig:modalAnalysis}{ \includegraphics[width=0.95\columnwidth]{Figures/modalAnalysisDampingNarrow.eps}}}\\
+    \vspace{-1em}\subfloat[]{\label{fig:spectrogram}{ \includegraphics[width=0.95\columnwidth]{Figures/specQuadratic2NarrowNoScale.eps}}}\\
+    \vspace{-1em}\subfloat[]{\label{fig:spectrogramDamp}{ \includegraphics[width=0.95\columnwidth]{Figures/specQuadratic2DampNarrowNoScale.eps}}}
+    \vspace{-1em}\caption{Experiments showing dynamically varying wave speed between $c = 2940$ ($N = 15$) and $c = 2205$ ($N = 20$) running at $f_\text{s} = 44100$ Hz. (a) Modal analysis of system \eqref{eq:totalSystem} using \eqref{eq:modalAnalysis}. (b) Output of the system while decreasing $c$ ($N = 15 \rightarrow 20$) without displacement correction excited with a narrow raised cosine at $n=0$ retrieved at $u_1^n$. The sound output follows the same pattern as predicted by the analysis shown in Figure \ref{fig:modalAnalysis}. (c) Output of the system while increasing $c$ ($N = 20 \rightarrow 15$) with displacement correction (essentially flipping Figure \ref{fig:modalAnalysis} horizontally). Higher frequencies are filtered out and prevent artefacts.}
+\end{figure}
 In the following, %\SWcomment[came up with this measure myself.. it made sense to me for measuring harmonic deviation / inharmonicity. Please let me know if you know a better measure or something I can reference]
 % \begin{equation}
 %     \varepsilon_p = \frac{f_p - pf_0}{f_0}\quad \text{[\%]}
