@@ -10,8 +10,8 @@ Ideally, a method that dynamically changes the grid size of finite-difference sc
 \begin{enumerate}
     \item generate an output with a fundamental frequency $f_0$ %described by Eq. \eqref{eq:fundamentalFreq} 
     which is linearly proportional to the wave speed $c$ ($f_0 \propto c$),
-    \item allow for a fractional $N$ to smoothly transition between different grid configurations% so that no auditory artefacts are present in the output sound,
-    \item generate an output containing $\lfloor N\rfloor-1$ modes which are integer multiples of the fundamental ($f_p = f_0 p$ with integer $p$),
+    \item allow for a fractional number of intervals $\Nfrac$ to smoothly transition between different grid configurations% so that no auditory artefacts are present in the output sound,
+    \item generate an output containing $ N-1$ modes which are integer multiples of the fundamental ($f_p = f_0 p$ with integer $p$),
     % \item generate an output with $\lfloor N\rfloor-1$ modes corresponding to the number of moving points of the system ($p = [1, \hdots, \allowbreak\lfloor N\rfloor-1]$),
     \item work in real time.
 \end{enumerate}
@@ -54,7 +54,7 @@ The systems can then be connected at the inner boundaries using a rigid connecti
 \begin{equation}\label{eq:rigid}
     u_M^n = w_0^n,\quad \forall n.
 \end{equation}
-To sum up, a grid function with $N = \lfloor L/h\rfloor$ (as per Eq. \eqref{eq:numberOfIntervals}) is divided into two separate subsystems connected at their respective inner boundaries. 
+To sum up, a grid function with $N$ intervals as per Eq. \eqref{eq:numberOfIntervals} is divided into two separate subsystems connected at their respective inner boundaries. 
 
 With the above boundary conditions imposed, the following state vectors can be defined:
 \begin{equation}
@@ -131,7 +131,7 @@ which, (again, recalling Eq. \eqref{eq:rigid}) are indeed equivalent expressions
     \vspace{-1em}\subfloat[]{\label{fig:twoFreeStringsGridMove}{ \includegraphics[width=\figwidth\columnwidth]{Figures/twoFreeStringsGridMoveNarrow.eps}}}\\
     \vspace{-1em}\subfloat[]{\label{fig:twoFreeStringsGridZoomed}{ \includegraphics[width=\figwidth\columnwidth]{Figures/twoFreeStringGridMoveZoomedNarrow.eps}}}
     \vspace{-1em}\caption{Illustration of the proposed method. In all figures, the x-axis shows the location of the respective grid points%(fx. $x_{u_l^n}$)
-    , but the $x$ and $n$ are omitted for brevity. (a) Locations of the states of two (1D wave) systems connected at the inner boundaries ($N = 30$, $x_{u_M}^n = x_{w_0}^n$). (b) When $c$ -- and consequently $h$ -- are decreased and the positions of the grid points change ($N = 30.5$, $x_{u_M}^n \neq x_{w_0}^n$). (c) Figure \ref{fig:twoFreeStringsGridMove} zoomed-in around the inner boundaries. The virtual grid points $u_{M+1}^n$ and $w_{-1}^n$ are shown together with the distance between them expressed using $\alpha$ in Eq. \eqref{eq:alphaDef}.}
+    , but the $x$ and $n$ are omitted for brevity. (a) Locations of the states of two (1D wave) systems connected at the inner boundaries ($\Nfrac = 30$, $x_{u_M}^n = x_{w_0}^n$). (b) When $c$ -- and consequently $h$ -- are decreased and the positions of the grid points change ($\Nfrac = 30.5$, $x_{u_M}^n \neq x_{w_0}^n$). (c) Figure \ref{fig:twoFreeStringsGridMove} zoomed-in around the inner boundaries. The virtual grid points $u_{M+1}^n$ and $w_{-1}^n$ are shown together with the distance between them expressed using $\alpha$ in Eq. \eqref{eq:alphaDef}.}
 \end{figure}
 
 \subsubsection{Changing the Grid}\label{sec:changingGrid}
@@ -144,12 +144,13 @@ If the wave speed $c$ is then decreased, and consequently the grid spacing $h$ a
 
 % \begin{figure}[h]
 % \centerline{\includegraphics[width=\columnwidth]{twoFreeStringGridMove} }
-% \caption{\label{fig:twoFreeStringsGridMove}{When the grid changes ($N = 30.5$). The x-axis shows the location (in m) of the respective grid points (fx. $x_{u_l^n}$), but the $x$ is omitted for clarity.}}
+% \caption{\label{fig:twoFreeStringsGridMove}{When the grid changes ($\Nfrac = 30.5$). The x-axis shows the location (in m) of the respective grid points (fx. $x_{u_l^n}$), but the $x$ is omitted for clarity.}}
 % \end{figure}
 
-As mentioned in Section \ref{sec:systSetup}, the state of the virtual grid points at the inner boundaries are defined as $u_{M+1}^n = w_1^n$ and $w_{-1}^n = u_{M-1}^n$ when the inner boundaries are perfectly overlapping  (i.e., $x^n_{u_M} = x^n_{w_0}$). If this is not the case (i.e., $x^n_{u_M} \neq x^n_{w_0}$) a Lagrangian interpolator $I(x_i)$ at location $x_i$ from the left boundary (in m) can be used to calculate the value of these virtual grid points (also see Figure \ref{fig:twoFreeStringsGridZoomed} for reference). The interpolator $I$ is a row-vector the same length as $\mathbfcal{U}^n$ (from Eq. \eqref{eq:fullState}) its values depending on what interpolation order is used. In the following the distance between the inner boundaries normalised by $h$ is defined as 
+As mentioned in Section \ref{sec:systSetup}, the state of the virtual grid points at the inner boundaries are defined as $u_{M+1}^n = w_1^n$ and $w_{-1}^n = u_{M-1}^n$ when the inner boundaries are perfectly overlapping  (i.e., $x^n_{u_M} = x^n_{w_0}$). If this is not the case (i.e., $x^n_{u_M} \neq x^n_{w_0}$) a Lagrangian interpolator $I(x_i)$ at location $x_i$ from the left boundary (in m) can be used to calculate the value of these virtual grid points (also see Figure \ref{fig:twoFreeStringsGridZoomed} for reference). The interpolator $I$ is a row-vector the same length as $\mathbfcal{U}^n$ (from Eq. \eqref{eq:fullState}) its values depending on what interpolation order is used. In the following the fractional part of $\Nfrac$ %distance between the inner boundaries normalised by $h$ 
+is defined as 
 \begin{equation}\label{eq:alphaDef}
-    \alpha = \alpha^n = \frac{x^n_{w_0} - x^n_{u_M}}{h}\,,
+    \alpha = \alpha^n = \Nfrac^n - N^n %\frac{x^n_{w_0} - x^n_{u_M}}{h}\,,
 \end{equation}
 and for clarity, $I$ and $\mathbfcal{U}^n$ are indexed by $m$.
 %\SWcomment[it's possible to skip until quadratic interpolation straight away from here, skipping the iterations] In the following, the distance between the inner boundaries normalised with $h$ is defined as
@@ -284,21 +285,22 @@ When applied to Eq. \eqref{eq:fullState} this yields the definitions for the vir
 %     \alpha_\text{I} u_{M-2}^n + \beta\text{I}u_{M-1}^n + \gamma u_{M}^n
 %     \end{bmatrix}.
 % \end{equation}
-As will be shown in Section \ref{sec:results}, quadratic interpolation yields the expected fundamental frequency at all times. One can show that when $N$ is an integer, and thus $\alpha = 0$, Eqs. \eqref{eq:calcUMP1} and \eqref{eq:calcWM1} can be substituted as $w_1^n$ and $u_{M-1}^n$ into Eqs. \eqref{eq:resultUM} and \eqref{eq:resultw0} respectively (as these acted as virtual grid points $u_{M+1}^n$ and $w_{-1}^n$). Then recalling Eq. \eqref{eq:rigid} it can be seen that the system reduces to \eqref{eq:resultOneConnectedPoint} and exhibits the same exact behaviour as the normal case. % also when interpolation needs to happen.
+As will be shown in Section \ref{sec:results}, quadratic interpolation yields the expected fundamental frequency at all times. One can show that when $\Nfrac$ is an integer, and thus $\alpha = 0$, Eqs. \eqref{eq:calcUMP1} and \eqref{eq:calcWM1} can be substituted as $w_1^n$ and $u_{M-1}^n$ into Eqs. \eqref{eq:resultUM} and \eqref{eq:resultw0} respectively (as these acted as virtual grid points $u_{M+1}^n$ and $w_{-1}^n$). Then recalling Eq. \eqref{eq:rigid} it can be seen that the system reduces to \eqref{eq:resultOneConnectedPoint} and exhibits the same exact behaviour as the normal case. % also when interpolation needs to happen.
 Rewriting system \eqref{eq:systemHalfStrings} to include this yields
 \begin{equation}\label{eq:FDSwithMethod}
     \begin{cases}
-        \delta_{tt}u_l^n = c^2\delta_{xx}u_l^n + J_u(x_{u_M}^n)\frac{2c^2}{h}\delta_{x\cdot}u_M^n\\
-        \delta_{tt}w_l^n = c^2\delta_{xx}w_l^n - J_w(x_{w_0}^n)\frac{2c^2}{h}\delta_{x\cdot}w_0^n
+        \delta_{tt}u_l^n = c^2\delta_{xx}u_l^n + J_u(x_{u_M}^n)\frac{2c^2}{h}\delta_{x\cdot}u_l^n\\
+        \delta_{tt}w_l^n = c^2\delta_{xx}w_l^n - J_w(x_{w_0}^n)\frac{2c^2}{h}\delta_{x\cdot}w_l^n
     \end{cases}
 \end{equation}
-where the definitions for the virtual grid points needed after expansion of the last terms is found in Eqs. \eqref{eq:connectionInterpol}.
+where the definitions for the virtual grid points from the second term are defined by the Neumann boundary condition in Eq. \eqref{eq:discreteNeumann} and those from the last terms are found in Eqs. \eqref{eq:connectionInterpol}.
+
 \subsubsection{Adding and removing Grid Points}
 When $c$, and consequently $h$, is decreased and the inner boundary points surpass the virtual points (i.e. $x_{u_M}^n \leq x_{w_{-1}}^n$ and $x_{w_0}^n \geq x_{u_{M+1}}^n$ or $
-\alpha \geq 1$) and $\lfloor N^n\rfloor > \lfloor N^{n-1}\rfloor$, a point is added to the right boundary of $u_l^n$ and the left boundary of $w_l^n$ (for both time indices $n$ and $n-1$) in an alternating fashion \SWcomment[as the best way turns out to be adding/removing close to the boundary to $\mathbf{u}$ (or $\mathbf{w}$) only (as described in the paragraph right before Section \ref{sec:dispCorr}), maybe this can be shortened/rewritten]: 
+\alpha \geq 1$) and $N^n >  N^{n-1}$, a point is added to the right boundary of $u_l^n$ and the left boundary of $w_l^n$ (for both time indices $n$ and $n-1$) in an alternating fashion \SWcomment[as the best way turns out to be adding/removing close to the boundary to $\mathbf{u}$ (or $\mathbf{w}$) only (as described in the paragraph right before Section \ref{sec:dispCorr}), maybe this can be shortened/rewritten]: 
 \begin{equation}\label{eq:addingPoint}
-        \begin{cases}\mathbf{u}^n = [\mathbf{u}^n, I_3\mathbf{v}^n]^T & \text{if $\lfloor N^n\rfloor $ is odd},\\
-        \mathbf{w}^n = [I_3^\flip\mathbf{v}^n, \mathbf{w}^n]^T & \text{if $\lfloor N^n\rfloor$ is even},
+        \begin{cases}\mathbf{u}^n = [\mathbf{u}^n, I_3\mathbf{v}^n]^T & \text{if $N^n $ is odd},\\
+        \mathbf{w}^n = [I_3^\flip\mathbf{v}^n, \mathbf{w}^n]^T & \text{if $ N^n$ is even},
         \end{cases}
 \end{equation}
 where 
@@ -329,16 +331,16 @@ See Figure \ref{fig:addingPoint}.
 
 Except in the case of extremely quick parameter variations, $\alpha'$ in Eq. \eqref{eq:customIp} is expected to be close to zero, i.e., $x_{u_M}^n + h \approx x_{w_0}^n$, meaning that $I_3 \approx [0, 0, 1, 0]$. %This makes sense by looking at Figure \ref{fig:twoFreeStringsGridZoomed}, as exactly when the boundary points $u_M^n$ and $w_0^n$ surpass the virtual points $w_{-1}^n$ and $u_{M+1}^n$, these are going to be close to overlapping.
 
-Removing grid points happens when $c$, and consequently $h$, is increased and $x_{u_M}^n \geq x_{w_0}^n$ (or $\lfloor N^n\rfloor < \lfloor N^{n-1}\rfloor$). %Compared to adding grid points, removing these is slightly more straightforward as points 
+Removing grid points happens when $c$, and consequently $h$, is increased and $x_{u_M}^n \geq x_{w_0}^n$ (or $ N^n <  N^{n-1}$). %Compared to adding grid points, removing these is slightly more straightforward as points 
 Grid points are simply removed from $\mathbf{u}$ and $\mathbf{w}$ (again for both $n$ and $n-1$) in an alternating fashion according to
 \begin{equation}\label{eq:removingPoint}
 \begin{cases}
-    \mathbf{u}^n = [u_0^n, u_1^n ..., u_{M-1}^n]^T & \text{if $\lfloor N^n\rfloor$ is even}, \\
-     \mathbf{w}^n = [w_1^n, w_2^n ..., w_{M_w}^n]^T & \text{if $\lfloor N^n\rfloor$ is odd}.
+    \mathbf{u}^n = [u_0^n, u_1^n ..., u_{M-1}^n]^T & \text{if $N^n$ is even}, \\
+     \mathbf{w}^n = [w_1^n, w_2^n ..., w_{M_w}^n]^T & \text{if $N^n$ is odd}.
     \end{cases}
 \end{equation}
 
-Until now, only adding and removing points in the center of the system has been considered. This location could be moved anywhere along the grid, the limit being one point from the boundary. In other words, both $u_l^n$ and $w_l^n$ need to have at least one point (excluding the outer boundaries). Furthermore, one does not have to add and remove points from $\mathbf{u}$ and $\mathbf{w}$ in an alternating fashion as in \eqref{eq:addingPoint}, but can just add and remove from (fx.) $\mathbf{u}$ leaving $\mathbf{w}$ the same size throughout the simulation. In the extreme case where $M = \lfloor N\rfloor - 1$ and $M_w = 1$ (leaving $w_l^n$ with only one moving grid point, $w_0^n$) the method still works.
+Until now, only adding and removing points in the center of the system has been considered. This location could be moved anywhere along the grid, the limit being one point from the boundary. In other words, both $u_l^n$ and $w_l^n$ need to have at least one point (excluding the outer boundaries). Furthermore, one does not have to add and remove points from $\mathbf{u}$ and $\mathbf{w}$ in an alternating fashion as in \eqref{eq:addingPoint}, but can just add and remove from (fx.) $\mathbf{u}$ leaving $\mathbf{w}$ the same size throughout the simulation. In the extreme case where $M = N - 1$ and $M_w = 1$ (leaving $w_l^n$ with only one moving grid point, $w_0^n$) the method still works.
 
 \subsubsection{Displacement correction}\label{sec:dispCorr}
 A problem that arises from increasing $h$, is that it is possible that $u_M^n \not\approx w_0^n$ at the time when a grid point needs to be removed. As $x_{u_M}^n \approx x_{w_0}^n$ at the time of removal (except for extremely quick parameter variations), this violates the rigid connection in \eqref{eq:rigid} and causes audible artefacts. A method is proposed that decreases the relative displacement of the inner boundaries the closer their grid-locations are together, i.e., the closer $\alpha$ in \eqref{eq:alphaDef} is to 0. We thus extend system \eqref{eq:FDSwithMethod} regular case as
@@ -363,10 +365,10 @@ with the difference in displacement between the inner boundaries
 \end{equation}
 (in m), (angular) frequency of the spring $\omega_0$ (in s$^{-1}$) and damping coefficient $\sigma_0$ (in s$^{-1}$). Furthermore, $\beta = \beta(\alpha)$ scales the effect of the displacement correction and is defined as
 \begin{equation}\label{eq:betaDef}
-    \beta = \frac{1-\alpha}{\alpha + \epsilon}\ ,
+    \beta = \frac{1-\alpha}{\alpha + \varepsilon}\ ,
 \end{equation}
-where $\epsilon \ll 1$ prevents a division by 0. Despite Eq. \eqref{eq:centeredAverage}, it is possible to calculate the force explicitly (such as in \cite{bilbao2009} or \cite{bilbao2009Dafx}). Furthermore, it can be shown that this calculation is defined, even for $\alpha  = \epsilon = 0$ which acts as a rigid connection such as Eq. \eqref{eq:rigid}.
-%$\beta$ can be seen as a spring force pulling the inner boundaries to the average displacement between them. A lower $\epsilon$ decreases the chance of artifacts but will have a greater filtering effect on the system. For low-speed changes, using $\sim 1000$ samples for removing one grid point, $\epsilon \approx 30$ ensures that $u_M^n \approx w_0^n$ at the time of removal and already suffices to remove artefacts.
+where $\varepsilon \ll 1$ prevents a division by 0. Despite Eq. \eqref{eq:centeredAverage}, it is possible to calculate the force explicitly (such as in \cite{bilbao2009} or \cite{bilbao2009Dafx}). Furthermore, it can be shown that this calculation is defined, even for $\alpha  = \varepsilon = 0$ which acts as a rigid connection such as Eq. \eqref{eq:rigid}.
+%$\beta$ can be seen as a spring force pulling the inner boundaries to the average displacement between them. A lower $\varepsilon$ decreases the chance of artifacts but will have a greater filtering effect on the system. For low-speed changes, using $\sim 1000$ samples for removing one grid point, $\varepsilon \approx 30$ ensures that $u_M^n \approx w_0^n$ at the time of removal and already suffices to remove artefacts.
 
 % 
 % \SWcomment[The following applies to odd-ordered Lagrange interpolators $\rightarrow$] The location at where points are added and removed greatly influences the behaviour of the system, especially in the higher frequencies (see Section \ref{sec:results}). The best behaviour is obtained when the location is as close to a boundary as possible. 
@@ -374,7 +376,7 @@ where $\epsilon \ll 1$ prevents a division by 0. Despite Eq. \eqref{eq:centeredA
 \subsection{Summary}
 Here, Section \ref{sec:proposedMethod} is summarised and describes the final version of the proposed method.
 
-The proposed method subdivides a grid function with $\lfloor N\rfloor +1$ grid points into two grid functions $u_l^n$ and $w_l^n$ with $M+1$ and $M_w+1$ grid points respectively for a total of $\lfloor N\rfloor +2$ grid points. Knowing that $\lambda=1\ \forall n$, Eq. \eqref{eq:updateEq}, written for both grid functions, becomes 
+The proposed method subdivides a grid function with $ N+1$ grid points into two grid functions $u_l^n$ and $w_l^n$ with $M+1$ and $M_w+1$ grid points respectively for a total of $ N +2$ grid points. Knowing that $\lambda=1\ \forall n$, Eq. \eqref{eq:updateEq}, written for both grid functions, becomes 
 \begin{subequations}\label{eq:uwUpdates}
     \begin{align}
         u_l^{n+1} &= u_{l+1}^n + u_{l-1}^n - u_l^{n-1},\label{eq:uUpdate}\\
@@ -385,7 +387,7 @@ The proposed method subdivides a grid function with $\lfloor N\rfloor +1$ grid p
 Due to the Dirichlet boundary condition in \eqref{eq:discreteDirichlet} imposed on the outer boundaries of the system, $u_0^n$ and $w_{M_w}^n$ are $0$ at all times and do not have to be included in the calculation. The ranges of calculation for Eq. \eqref{eq:uUpdate} and \eqref{eq:wUpdate} then become $l = [1, \hdots, M]$ and $l = [0, \hdots, M_w - 1]$ respectively. 
 
 The inner boundaries are calculated by expanding \eqref{eq:FDSwithMethod} (ignoring the displacement correction for now)
-\begin{subequations}
+\begin{subequations}\label{eq:innerboundariesExpanded}
     \begin{align}
         u_M^{n+1} &= u_{M+1}^n + u_{M-1}^n - u_M^{n-1},\\
         w_0^{n+1} &= w_{-1}^n + w_{1}^n - w_0^{n-1}.
@@ -394,7 +396,7 @@ The inner boundaries are calculated by expanding \eqref{eq:FDSwithMethod} (ignor
 %
 where virtual grid points $u_{M+1}^n$ and $w_{-1}^n$ can be calculated using Eq. \eqref{eq:connectionInterpol}.
 
-Then, when $\lfloor N^n \rfloor > \lfloor N^{n-1} \rfloor$ a point is added to $\mathbf{u}^n$ and $\mathbf{u}^{n-1}$ (or $\mathbf{w}^n$ and $\mathbf{w}^{n-1}$) using Eq. \eqref{eq:addingPoint}, and when $\lfloor N^n \rfloor <\lfloor N^{n-1} \rfloor$ a point is removed from the same vectors using Eq. \eqref{eq:removingPoint}. In order to prevent audible artefacts when increasing $c$ (and thus decreasing $N$), a method in \eqref{eq:sysDispCorr} is proposed to ensure that the inner boundaries have a similar displacement when one of them is removed. 
+Then, when $ N^n > N^{n-1}$ a point is added to $\mathbf{u}^n$ and $\mathbf{u}^{n-1}$ (or $\mathbf{w}^n$ and $\mathbf{w}^{n-1}$) using Eq. \eqref{eq:addingPoint}, and when $ N^n  < N^{n-1} $ a point is removed from the same vectors using Eq. \eqref{eq:removingPoint}. In order to prevent audible artefacts when increasing $c$ (and thus decreasing $\Nfrac$), a method in \eqref{eq:sysDispCorr} is proposed to ensure that the inner boundaries have a similar displacement when one of them is removed. 
 
 Finally, using $\mathbfcal{U}$ from Eq. \eqref{eq:fullState} the total system can be compactly written in matrix form as
 \begin{equation}\label{eq:totalSystem}
@@ -403,7 +405,7 @@ Finally, using $\mathbfcal{U}$ from Eq. \eqref{eq:fullState} the total system ca
     \mathbfcal{U}^n
     + \mathbf{C}_-\mathbfcal{U}^{n-1}
 \end{equation}
-with $\lfloor N\rfloor \times \lfloor N\rfloor$ matrices
+with $ N \times N$ matrices
 \begin{equation}\label{eq:bMat}
     \mathbf{B} = 
     % \begingroup % keep the change local
@@ -422,7 +424,7 @@ containing the effect of the general method described in Section \ref{sec:changi
 \begin{equation}\label{eq:CMat}
     \mathbf{C}_\pm = \pm\left(\mathbf{I} - \frac{\beta k^2 (\omega_0^2\pm\sigma_0/k)}{2}\mathbf{J}\boldsymbol{\eta}\right)
 \end{equation}
-containing the effect of the displacement correction described in Section \ref{sec:dispCorr} where $\mathbf{I}$ is the $\lfloor N\rfloor \times \lfloor N\rfloor$ identity matrix and 
+containing the effect of the displacement correction described in Section \ref{sec:dispCorr} where $\mathbf{I}$ is the $ N \times N$ identity matrix and 
 \begin{equation}
     \mathbf{J} = [\mathbf{0}_{M-1}, 1/h, -1/h, \mathbf{0}_{M_w-1}]^T
 \end{equation}
@@ -430,7 +432,7 @@ and
 \begin{equation}
     \boldsymbol{\eta} = [\mathbf{0}_{M-1}, -1, 1, \mathbf{0}_{M_w-1}]
 \end{equation}
-are vectors of length $\lfloor N\rfloor$ and $\boldsymbol{0}_i$ is a zero-vector of length $i$.
+are vectors of length $ N$ and $\boldsymbol{0}_i$ is a zero-vector of length $i$.
 %
 % \begin{equation}\small
 %     \mathbf{B} = \begin{bmatrix}[ccccccc|cc]
@@ -442,7 +444,7 @@ are vectors of length $\lfloor N\rfloor$ and $\boldsymbol{0}_i$ is a zero-vector
 %     \end{bmatrix}
 % \end{equation}
 %
-Notice that as $\alpha$ approaches $1$, $\mathbf{B}$ reduces to a matrix with ones on the diagonals next to the main diagonal and zeros elsewhere, which translates directly to the normal case in Eq. \eqref{eq:updateEq} with $N = M + M_w + 1$. 
+Notice that as $\alpha$ approaches $1$, $\mathbf{B}$ reduces to a matrix with ones on the diagonals next to the main diagonal and zeros elsewhere, which translates directly to the normal case in Eq. \eqref{eq:updateEq} with $\Nfrac = M + M_w + 1$. 
 
 \subsection{Implementation}
 Algorithm \ref{alg:calcOrder} shows the order of calculation to implement the method presented in this paper. Important is to only retrieve a change in $c$ at time index $n$ before all other, so that $u_l^n$ and $w_l^n$ are calculated with the same $\alpha$ and $\beta$ time index $n$ for all $l$.
@@ -455,8 +457,8 @@ Algorithm \ref{alg:calcOrder} shows the order of calculation to implement the me
             \begin{minipage}[c]{0.9\linewidth}
                 Retrieve new $c$\\
                 Calc. $h$ (Eq. \eqref{eq:stabilityCond} with equality)\\
-                Calc. $\lfloor N^n\rfloor$ (Eq. \eqref{eq:numberOfIntervals}) \\
-                \If{$\lfloor N^n\rfloor \neq \lfloor N^{n-1} \rfloor$}
+                Calc. $ N^n$ (Eq. \eqref{eq:numberOfIntervals}) \\
+                \If{$ N^n \neq N^{n-1} $}
                 {
                     Add or remove point (Eq. \eqref{eq:addingPoint} or \eqref{eq:removingPoint})\\
                     Update $M$ and $M_w$
