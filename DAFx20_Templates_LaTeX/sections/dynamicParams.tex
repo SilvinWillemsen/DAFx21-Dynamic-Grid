@@ -33,7 +33,7 @@ Another solution could be to set and fix $N$ at the beginning of the simulation 
 
 To circumvent the aforementioned undesirable effects, we want to allow the number of intervals $N$ to be \textit{fractional} or non-integer. This removes the necessity of the flooring operation in Eq. \eqref{eq:numberOfIntervals} and Eq. \eqref{eq:compactLambda}, and consequently satisfies the CFL condition in \eqref{eq:CFL} with equality at all times. Introducing fractional number of intervals $\Nfrac$, where $N = \lfloor \Nfrac\rfloor$, Eq. \eqref{eq:fundamentalFreqCont} can be rewritten in terms of $\Nfrac$ by substituting Eq. \eqref{eq:numberOfIntervals} into Eq. \eqref{eq:fundamentalFreqCont} (using Eq. \eqref{eq:stabilityCond} satisfied with equality) yielding
 \begin{equation}\label{eq:fundamentalFreq}
-    f_0 = \frac{1}{2\Nfrac k}\ .
+    f_0 = \frac{1}{2\Nfrac k}\quad \text{with}\quad \Nfrac = L/h.
 \end{equation}
 This shows that if $\lambda = 1$, $\Nfrac$,  determines the fundamental frequency of the simulation. 
 

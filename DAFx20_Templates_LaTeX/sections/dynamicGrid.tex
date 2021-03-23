@@ -1,8 +1,16 @@
 \section{The Dynamic Grid}
-As mentioned in the previous section, the goal of this paper is to achieve real-time  parameter changes by dynamically changing grid configurations, in order to prevent undesirable behaviour such as a decrease in bandwidth and increase in numerical dispersion. % discussed in Section \ref{sec:quality}. %This section will describe the problems that arise when adding and removing grid points. Afterwards, some iterations done over the course of this project and their drawbacks will be shown, leading up to the final implementation of the dynamic grid. 
+If we want to dynamically change parameters of our model, in this case the wave speed $c$, there are several aspects that need to be taken into account in a discrete setting. First of all, a change in $c$ causes a change in $\lambda$ according to Eq. \eqref{eq:compactLambda}, affecting the simulation quality and bandwidth. Secondly, and more importantly, a change in $c$ could result in a change in $N$ through Eq. \eqref{eq:numberOfIntervals}. As $N$ directly relates to the number of grid points, this raises questions as to \textit{where} and especially \textit{how} one would add and remove points to the grid according to the now-dynamic wave speed.
+
+We propose a method that allows for a non-integer number of intervals to smoothly change between grid configurations, i.e, the number of grid points. This removes the necessity of the flooring operation in Eq. \eqref{eq:numberOfIntervals} and Eq. \eqref{eq:compactLambda}, and consequently satisfies the CFL condition in \eqref{eq:CFL} with equality at all times. Introducing fractional number of intervals $\Nfrac$, where $N = \lfloor \Nfrac\rfloor$, Eq. \eqref{eq:fundamentalFreqCont} can be rewritten in terms of $\Nfrac$ by substituting Eq. \eqref{eq:numberOfIntervals} into Eq. \eqref{eq:fundamentalFreqCont} (using Eq. \eqref{eq:stabilityCond} satisfied with equality) yielding
+\begin{equation}\label{eq:fundamentalFreq}
+    f_0 = \frac{1}{2\Nfrac k}\quad \text{with}\quad \Nfrac = L/h.
+\end{equation}
+This shows that if $\lambda = 1$, $\Nfrac$ solely determines the fundamental frequency of the simulation. 
+
+% As mentioned in the previous section, the goal of this paper is to achieve real-time  parameter changes by dynamically changing grid configurations, in order to prevent undesirable behaviour such as a decrease in bandwidth and increase in numerical dispersion. % discussed in Section \ref{sec:quality}. %This section will describe the problems that arise when adding and removing grid points. Afterwards, some iterations done over the course of this project and their drawbacks will be shown, leading up to the final implementation of the dynamic grid. 
 
 % The first questions that need to be answered are ``where to add points?" and ``how to add points?" The problems when doing this range from artifacts or auditory `clicks' in the output sound to ``exploding" systems due to artificial injection of energy. 
-First, this section will list the requirements of a method that dynamically changes FDTD grid configurations. %Then, the iterations done over the course of this project will briefly be described, the details of each can be found in Appendix \ref{app:A}. \SWcomment[(I think I might remove the iterations and appendix actually..)] 
+The rest of this section will list the requirements of a method that dynamically changes FDTD grid configurations. %Then, the iterations done over the course of this project will briefly be described, the details of each can be found in Appendix \ref{app:A}. \SWcomment[(I think I might remove the iterations and appendix actually..)] 
 Then, the proposed method will be described in detail and summarised, and finally, some details on its implementation are given. 
 
 \subsection{Method requirements}\label{sec:methodReq}
@@ -31,11 +39,11 @@ The last requirement is added in order to have a playable simulation.
 % Although informal testing shows that adding points to the grid can happen smoothly, removing points smoothly is more challenging. This is due to the fact that the grid point at the boundary will be moving right before it is removed and its displacement needs to (somehow) smoothly be reduced to 0 to satisfy the fixed boundary condition in Eq. \eqref{eq:contDirichlet}. %\SWcomment[$\leftarrow$ if simply supported condition is mentioned here] Even though the $\delta_{xx}u$ part of this condition can be easily satisfied, the $u=0$ part can not.
 
 \subsection{Proposed Method}\label{sec:proposedMethod}
-This section introduces the proposed method to dynamically and smoothly change the grid of FDSs to account for dynamic parameter changes. %To avoid the issues of adding and removing points at the boundary due to boundary conditions, they can be added or removed along the grid instead. \SWcomment[$\leftarrow$ Revise sentence if iterations are removed] For the sake of simplicity, the location is chosen to be the center of the system. %\SWcomment[At the end of this section, the location exhibiting the best behaviour will be shown.] 
+% This section introduces the proposed method to dynamically and smoothly change the grid of FDSs to account for dynamic parameter changes. %To avoid the issues of adding and removing points at the boundary due to boundary conditions, they can be added or removed along the grid instead. \SWcomment[$\leftarrow$ Revise sentence if iterations are removed] For the sake of simplicity, the location is chosen to be the center of the system. %\SWcomment[At the end of this section, the location exhibiting the best behaviour will be shown.] 
 In the following, the location of a grid point (in m from the left boundary) $i$ (such as $i = u_0$) at time index $n$ is denoted by $x_i^n$. 
 
 \subsubsection{System Setup}\label{sec:systSetup}
-Consider two grid functions, $u_\lu^n$ and $w_\lw^n$ defined over discrete domains $\lu = [0, \hdots, M]$ and $\lw = [0, \hdots, M_w]$ respectively with integers $M = \lceil 0.5L/ck\rceil $ with $\lceil \cdot \rceil$ denoting the ceiling operation and $M_w = \lfloor 0.5L/ck\rfloor$, i.e., half the number of points allowed by the stability condition, plus one for overlap. The grid functions can then be placed in line with each other with $u_M^n$ and $w_0^n$ (defined as the inner boundaries) overlapping, i.e., $x_{u_M}^n = x_{w_0}^n$, and $u_0^n$ and $w_{M_w}^n$ (defined as the outer boundaries) located at $x_{u_0} = 0$ and $x_{w_{M_w}} = L$. See Figure \ref{fig:twoFreeStrings}. The following boundary conditions are then imposed:
+Consider two grid functions, $u_\lu^n$ and $w_\lw^n$ defined over discrete domains $\lu = [0, \hdots, M]$ and $\lw = [0, \hdots, M_w]$ respectively with integers $M = \lceil 0.5L/ck\rceil $ with $\lceil \cdot \rceil$ denoting the ceiling operation and $M_w = \lfloor 0.5L/ck\rfloor$, i.e., half the number of points allowed by the stability condition, plus one for overlap. The grid functions can then be placed in line with each other on the same domain $x$ with $u_M^n$ and $w_0^n$ (defined as the inner boundaries) overlapping, i.e., $x_{u_M}^n = x_{w_0}^n = Mh$, and $u_0^n$ and $w_{M_w}^n$ (defined as the outer boundaries) located at $x_{u_0} = 0$ and $x_{w_{M_w}} = L$. See Figure \ref{fig:twoFreeStrings}. The following boundary conditions are then imposed:
 \begin{subequations}\label{eq:halfStringBoundaryCond}
     \begin{align}
         u_0^n = w_{M_w}^n &= 0,\quad \text{(Dirichlet)}\label{eq:halfStringBoundaryCondDirichlet}\\
@@ -352,12 +360,12 @@ A problem that arises from increasing $h$, is that it is possible that $u_M^n \n
     \delta_{tt}w_\lw^n = c^2\delta_{xx}w_\lw^n - J_w(x_{w_0}^n)\left(2c^2\delta_{x\cdot}w_0^n+F_\text{c}\right)
 \end{cases}
 \end{equation}
-where $J_u$ and $J_w$ are as in \eqref{eq:spreadingOperators}. Furthermore, using centered temporal averaging and first-order difference operators
+Furthermore, using centered temporal averaging and first-order difference operators
 \begin{align}\label{eq:centeredAverage}
     \mu_{t\cdot}\ugen_l^n &= \frac{1}{2} \left(\ugen_l^{n+1} + \ugen_l^{n-1}\right)\\
     \delta_{t\cdot}\ugen_l^n &= \frac{1}{2k} \left(\ugen_l^{n+1} - \ugen_l^{n-1}\right)
 \end{align}
-the effect of the correction (in m$^2/$s$^2$) is defined as
+the correction effect (in m$^2/$s$^2$) is modelled as a spring-like connection and is defined as
 \begin{equation}\label{eq:dispCorrForce}
     F_\text{c} = \beta \left(\omega_0^2\mu_{t\cdot}\eta^n +\sigma_0\delta_{t\cdot}\eta^n \right).
 \end{equation}
@@ -459,7 +467,8 @@ Algorithm \ref{alg:calcOrder} shows the order of calculation to implement the me
             \begin{minipage}[c]{0.9\linewidth}
                 Retrieve new $c$\\
                 Calc. $h$ (Eq. \eqref{eq:stabilityCond} with equality)\\
-                Calc. $ N^n$ (Eq. \eqref{eq:numberOfIntervals}) \\
+                Calc. $\Nfrac^n$ and $N^n$ (Eqs. \eqref{eq:fundamentalFreq} and \eqref{eq:numberOfIntervals}) \\
+                Calc. $\alpha$ (Eq. \eqref{eq:alphaDef})\\
                 \If{$ N^n \neq N^{n-1} $}
                 {
                     Add or remove point (Eq. \eqref{eq:addingPoint} or \eqref{eq:removingPoint})\\
@@ -475,7 +484,7 @@ Algorithm \ref{alg:calcOrder} shows the order of calculation to implement the me
                 %     Remove point (Eq. \eqref{eq:removingPoint})\\
                 %     Update $M$ and $M_w$
                 % }
-                Calc. $\alpha$ and $\beta$ (Eqs. \eqref{eq:alphaDef} and \eqref{eq:betaDef})\\
+                Calc. $\beta$ (Eq. \eqref{eq:betaDef})\\
                 Update $\mathbf{B}$ and $\mathbf{C}_\pm$ (Eqs. \eqref{eq:bMat} and \eqref{eq:CMat})\\
                 Calc. scheme (Eq. \eqref{eq:totalSystem})\\
                 Retrieve output\\
