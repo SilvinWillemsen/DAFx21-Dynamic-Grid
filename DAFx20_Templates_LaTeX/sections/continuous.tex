@@ -8,13 +8,13 @@ The physics of dynamic systems is commonly described using partial differential 
 
 The 1D wave equation may be written
 \begin{equation}\label{eq:1dwave}
-    \frac{\partial^2 u}{\partial t^2}= c^2\frac{\partial^2 u}{\partial x^2}\ ,
+    \frac{\partial^2 \ugen}{\partial t^2}= c^2\frac{\partial^2 \ugen}{\partial x^2}\ ,
 \end{equation}
-and is defined over spatial domain $x \in [0, L]$, for length $L$ (in m) and time $t \geq 0$ (in s). $c$ (in m/s) is the wave speed. The dependent variable $u(x,t)$ in Eq. \eqref{eq:1dwave} may be interpreted as the transverse displacement of an ideal string, or the acoustic pressure in the case of a cylindrical tube. Two possible choices of boundary conditions are
+and is defined over spatial domain $x \in [0, L]$, for length $L$ (in m) and time $t \geq 0$ (in s). $c$ (in m/s) is the wave speed. The dependent variable $\ugen(x,t)$ in Eq. \eqref{eq:1dwave} may be interpreted as the transverse displacement of an ideal string, or the acoustic pressure in the case of a cylindrical tube. Two possible choices of boundary conditions are
 \begin{subequations}\label{eq:continuousBoundaries}
     \begin{align}
-        u(0, t) = u(L, t) &= 0\quad \text{(Dirichlet)},\label{eq:contDirichlet}\\
-        \frac{\partial}{\partial x} u(0, t) = \frac{\partial}{\partial x} u(L, t) &= 0\quad \text{(Neumann)},\label{eq:contNeumann}
+        \ugen(0, t) = \ugen(L, t) &= 0\quad \text{(Dirichlet)},\label{eq:contDirichlet}\\
+        \frac{\partial}{\partial x} \ugen(0, t) = \frac{\partial}{\partial x} \ugen(L, t) &= 0\quad \text{(Neumann)},\label{eq:contNeumann}
     \end{align}
 \end{subequations}
 which describe a `fixed' and `free' boundary respectively in the case of an ideal string, and `open' and `closed' conditions respectively in the case of a cylindrical acoustic tube.

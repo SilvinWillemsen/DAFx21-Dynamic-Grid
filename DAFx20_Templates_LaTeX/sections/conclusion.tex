@@ -1,17 +1,12 @@
 \section{Conclusions and Perspectives}\label{sec:conclusion}
-This paper presents a method to change grid configurations of finite difference schemes to allow for dynamic parameter changes. The proposed method might not provide an exact solution to the problem, but does circumvent the need for upsampling and higher orders of computations necessary to approximate this solution. %Even though interpolation needs to happen, the drawbacks of full-grid interpolation can be avoided by not `listening' to the location where points are added but rather closer to the boundary. If one wants to listen to the center, the location where points are added or removed can easily be changed.
+This paper presents a method to change grid configurations of finite difference schemes to allow for dynamic parameter changes. Grid points are shown to be added and removed smoothly to reduce artefacts between configurations. 
 
-Furthermore, the method allows the stability condition, which the scheme needs to abide, to always be satisfied with equality. This allows for a simulation where the parameters can be changed dynamically without running into either stability or quality issues, at least at slow parameter changes
+The proposed method might not provide an exact solution to the problem, but does circumvent the need for upsampling and higher orders of computations necessary to approximate this solution. %Even though interpolation needs to happen, the drawbacks of full-grid interpolation can be avoided by not `listening' to the location where points are added but rather closer to the boundary. If one wants to listen to the center, the location where points are added or removed can easily be changed.
+%
+Furthermore, the method allows the stability condition, which the scheme needs to abide, to always be satisfied with equality. This allows for a simulation where the parameters can be changed dynamically without running into either stability or quality issues, at least at slow parameter changes.
 
 % The 1D wave equation was used as a test case, but the method could be used for other systems as well. 
 
+Although this method has only been applied to the the 1D wave equation it could be applied to many other 1D FDSs. Other parameters, such as material density or stiffness could also be made dynamic, going beyond what is physically possible. An application of the method that could be investigated is that of non-linear systems, such as the Kirchhoff-Carrier model [CITE] where the tension is modulated based on the state of the system.
 
-Though this method has only been presented using the 1D wave equation it could be applied to many other 1D FDSs. 
-
-
-Finally, an application that will be investigated is the case of non-linear systems where parameters are modulated based on the state of the system. Tension modulation...
-
-
-Future work includes creating an adaptive version of the displacement correction that changes its effect depending on the speed at which the grid is changed.
-
-Stability and energy analyses will have to be performed to test the limits on parameter / grid changes.
+Other future work includes creating an adaptive version of the displacement correction that changes its effect depending on the speed at which the grid is changed. Finally, stability and energy analyses will have to be performed to test the limits on parameter / grid changes.

@@ -2,72 +2,76 @@
 This section will provide a brief introduction to physical modelling using FDTD methods, including details on stability and quality of the simulations based on these methods.
 
 \subsection{Discretisation}
-Using FDTD methods, the continuous 1D wave equation in Eq. \eqref{eq:1dwave} can be discretised into points in space and time. The spatial variable can be discretised using $x_l = lh$ (read: $x$ at spatial index $l$) with integer $l \in [0, \hdots, N]$, distance between two consecutive grid points $h$ (in m), also referred to as the grid spacing, and total number of points $N + 1$ (including the boundaries) where the total number of intervals between the grid points is described as
+Using FDTD methods, the continuous 1D wave equation in Eq. \eqref{eq:1dwave} can be discretised into points in space and time. The spatial variable can be discretised using $x_l = lh$ %(read: $x$ at spatial index $l$) 
+with integer $l \in [0, \hdots, N]$, distance between two consecutive grid points $h$ (in m), also referred to as the grid spacing, and total number of points $N + 1$ (including the boundaries) where the total number of intervals between the grid points is described as
 \begin{equation}\label{eq:numberOfIntervals}
     N = \lfloor L/h\rfloor,
 \end{equation}
-with $\lfloor \cdot \rfloor$ denoting the flooring operation. The temporal variable can be discretised using $t_n = nk$ with positive integer $n$, time step $k = 1/f_\text{s}$ (in s) and sample rate $f_\text{s}$ (in Hz). The state variable $u$ can then be approximated using $u(x,t) \approx u_l^n$, where grid function $u_l^n$ is the displacement of $u$ at spatial index $l$ and time index $n$. %The total state at time index $n$ is then denoted as vector $\mathbf{u}^n$ with size $N+1$.
+with $\lfloor \cdot \rfloor$ denoting the flooring operation. The temporal variable can be discretised using $t_n = nk$ with positive integer $n$, time step $k = 1/f_\text{s}$ (in s) and sample rate $f_\text{s}$ (in Hz). The state variable $\ugen$ can then be approximated using $\ugen(x,t) \approx \ugen_l^n$, where grid function $\ugen_l^n$ is the displacement of $\ugen$ at spatial index $l$ and time index $n$. %The total state at time index $n$ is then denoted as vector $\mathbf{u}^n$ with size $N+1$.
 
-The following operators can then be applied to $u_l^n$ to get the following approximations to the derivatives in Eq. \eqref{eq:1dwave}
+The following operators can then be applied to $\ugen_l^n$ to get the following approximations to the derivatives in Eq. \eqref{eq:1dwave}
 \begin{subequations}\label{eq:operators}
     \begin{align}
-         \delta_{tt}u_l^n &= \frac{1}{k^2}\left(u_l^{n+1}-2u_l^n + u_l^{n-1}\right)\;\;\approx\quad\frac{\partial^2u}{\partial t^2}\label{eq:secondOrderTime}\ ,\\
-         \delta_{xx}u_l^n &= \frac{1}{h^2}\left(u_{l+1}^n-2u_l^n + u_{l-1}^n\right)\quad\approx\quad \frac{\partial^2u}{\partial x^2}\ .\label{eq:secondOrderSpace}
+         \delta_{tt}\ugen_l^n &= \frac{1}{k^2}\left(\ugen_l^{n+1}-2\ugen_l^n + \ugen_l^{n-1}\right)\;\;\approx\quad\frac{\partial^2\ugen}{\partial t^2}\label{eq:secondOrderTime}\ ,\\
+         \delta_{xx}\ugen_l^n &= \frac{1}{h^2}\left(\ugen_{l+1}^n-2\ugen_l^n + \ugen_{l-1}^n\right)\quad\approx\quad \frac{\partial^2\ugen}{\partial x^2}\ .\label{eq:secondOrderSpace}
     \end{align}
 \end{subequations}
 Substituting these definitions into Eq. \eqref{eq:1dwave} yields the following finite-difference scheme (FDS)
 \begin{equation}\label{eq:FDS}
-    \delta_{tt}u_l^n = c^2 \delta_{xx}u_l^n.
+    \delta_{tt}\ugen_l^n = c^2 \delta_{xx}\ugen_l^n.
 \end{equation}
 Expanding the operators as in %the Eqs. in
-\eqref{eq:operators} and solving for $u_l^{n+1}$, the only unknown, yields the following update equation
+\eqref{eq:operators} and solving for $\ugen_l^{n+1}$ yields the following update equation
 \begin{equation}\label{eq:updateEq}
-    u_l^{n+1} = 2u_l^n-u_l^{n-1} + \lambda^2 \left(u_{l+1}^n-2u_l^n + u_{l-1}^n\right).
+    \ugen_l^{n+1} = 2\ugen_l^n-\ugen_l^{n-1} + \lambda^2 \left(\ugen_{l+1}^n-2\ugen_l^n + \ugen_{l-1}^n\right).
 \end{equation}
-%saying that $u$ at the next time index ($n+1$) can be calculated using only values of $u$ at the current ($n$) and previous time indices ($n-1$).
-This update can then be implemented in software, such as {\tt MATLAB} or {\tt C++}. In Eq. \eqref{eq:updateEq},
+%saying that $\ugen$ at the next time index ($n+1$) can be calculated using only values of $\ugen$ at the current ($n$) and previous time indices ($n-1$).
+which can be implemented in software. %This update can then be implemented in software, such as {\tt MATLAB} or {\tt C++}. 
+Here,
 \begin{equation}\label{eq:lambdaDef}
     \lambda = \frac{ck}{h}
 \end{equation}
-is referred to as the Courant number and determines stability, as well as the quality and behaviour of the simulation. This will be described in detail in Sections \ref{sec:stability} and \ref{sec:quality}.
+is referred to as the Courant number and determines the stability, as well as the quality and behaviour of the simulation. This will be described in detail in Sections \ref{sec:stability} and \ref{sec:quality}.
 
-In the FDS described in Eq. \eqref{eq:FDS}, the boundary locations are at $l = 0$ and $l = N$. Substituting these locations into Eq. \eqref{eq:updateEq} seemingly shows that grid points outside of the defined domain are needed, namely $u_{-1}^n$ and $u_{N+1}^n$. These can be referred to as \textit{virtual grid points} and can be accounted for using the boundary conditions in Eq. \eqref{eq:continuousBoundaries}. Discretising these yields
+In the FDS described in Eq. \eqref{eq:FDS}, the boundary locations are at $l = 0$ and $l = N$. Substituting these locations into Eq. \eqref{eq:updateEq} seemingly shows that grid points outside of the defined domain are needed, namely $\ugen_{-1}^n$ and $\ugen_{N+1}^n$. These can be referred to as \textit{virtual grid points} and can be accounted for using the boundary conditions in Eq. \eqref{eq:continuousBoundaries}. Discretising these yields
 \begin{subequations}
     \begin{align}
-        u_0^n = u_N^n &= 0 \quad\text{(Dirichlet)}\label{eq:discreteDirichlet}\\
-        \delta_{x\cdot} u_0^n = \delta_{x\cdot} u_N^n &= 0 \quad \text{(Neumann)}\label{eq:discreteNeumann}
+        \ugen_0^n = \ugen_N^n &= 0 \quad\text{(Dirichlet)}\label{eq:discreteDirichlet}\\
+        \delta_{x\cdot} \ugen_0^n = \delta_{x\cdot} \ugen_N^n &= 0 \quad \text{(Neumann)}\label{eq:discreteNeumann}
     \end{align}
 \end{subequations}
 where 
 \begin{equation}
-    \delta_{x\cdot}u_l^n = \frac{1}{2h}\left(u_{l+1}^n - u_{l-1}^n\right)\quad \approx\quad \frac{\partial u}{\partial x}
+    \delta_{x\cdot}\ugen_l^n = \frac{1}{2h}\left(\ugen_{l+1}^n - \ugen_{l-1}^n\right)\quad \approx\quad \frac{\partial \ugen}{\partial x}
 \end{equation}
-is a second-order accurate approximation of the first-order spatial derivative. The Dirichlet condition in \eqref{eq:discreteDirichlet} says that the displacement of $u$ at the boundary locations are always 0. In practice, this means that these grid points do not need to be updated and the spatial range of calculation for Eq. \eqref{eq:updateEq} then becomes $l = [1, \hdots, N-1]$. If the Neumann condition is used, the boundary points do need to be updated as these are not necessarily $0$; rather, their `slope' is $0$. Eq. \eqref{eq:discreteNeumann} can then be expanded to yield defnitions for these virtual grid points
+is a second-order accurate approximation of the first-order spatial derivative. The Dirichlet condition in \eqref{eq:discreteDirichlet} says that the displacement of $\ugen$ at the boundary locations are always 0. In practice, this means that these grid points do not need to be updated and the spatial range of calculation for Eq. \eqref{eq:updateEq} then becomes $l = [1, \hdots, N-1]$. If the Neumann condition is used, the boundary points do need to be updated as these are not necessarily $0$; rather, their `slope' is $0$. Eq. \eqref{eq:discreteNeumann} can then be expanded to yield defnitions for these virtual grid points
 \begin{equation}\label{eq:neumannSolution}
-    u_{-1}^n = u_1^n \quad \text{and} \quad u_{N+1}^n = u_{N-1}^n\,.
+    \ugen_{-1}^n = \ugen_1^n \quad \text{and} \quad \ugen_{N+1}^n = \ugen_{N-1}^n\,.
 \end{equation}
 
-Now that the full system is described, the output sound can be retrieved by `recording' the state $u_l^n$ in Eq. \eqref{eq:updateEq} at $0 < l < N$ (when using fixed boundary conditions) and listening to that at the given sample rate $f_\text{s}$. %Though the output location does not change the behaviour of the system, it will determine the amplitude of different harmonic partials in the system output.
+Now that the full system is described, the output sound can be retrieved by `recording' the state $\ugen_l^n$ in Eq. \eqref{eq:updateEq} at $0 < l < N$ (when using fixed boundary conditions) and listening to that at the given sample rate $f_\text{s}$. %Though the output location does not change the behaviour of the system, it will determine the amplitude of different harmonic partials in the system output.
 
 \subsection{Stability}\label{sec:stability}
 Discretising continuous equations using numerical methods places limits on the parameters describing it. A wrong choice of parameters could render the system unstable and make it ``explode". In the case of the update in Eq. \eqref{eq:updateEq} it can be shown -- using Von Neumann analysis \cite{Strikwerda1989} -- that the system is stable if
 \begin{equation}\label{eq:CFL}
     \lambda \leq 1,
 \end{equation}
-which is referred to as the Courant-Friedrichs-Lewy (CFL) stability condition. The closer $\lambda$ is to this condition, the higher the quality of the simulation (see Section \ref{sec:quality}) and if $\lambda = 1$, Eq. \eqref{eq:updateEq} provides an exact solution to Eq. \eqref{eq:1dwave} %(this is true for the 1D wave equation)
-(see Figures \ref{fig:dispersion}a and \ref{fig:dispersion}b). If $\lambda > 1$ the system will become unstable (see Figure \ref{fig:dispersion}c).
-\begin{figure}[t]
-    \centering
-    % \subfloat[]{\label{fig:lambda1}{ \includegraphics[width=0.3\textwidth]{Figures/ulnLambda1.eps}}}
-    % \subfloat[]{\label{fig:lambda0.9}{ \includegraphics[width=0.3\textwidth]{Figures/ulnLambda09.eps}}}
-    % \subfloat[]{\label{fig:lambda1.001}{ \includegraphics[width=0.3\textwidth]{Figures/ulnLambda1001.eps}}}
-    \includegraphics[width=0.8\columnwidth]{Figures/dispersionCompact.eps}
-    \caption{State $u_l^n$ with $N = 50$ and $f_\text{s} = 44100$ visualised $\sim\!100$ samples after excitation. (a) If $\lambda = 1$, the solution is exact. (b) If $\lambda < 1$ dispersive behaviour shows. (c) If $\lambda > 1$ the CFL condition in Eq. \eqref{eq:CFL} is not satisfied and the system is unstable.
-    \label{fig:dispersion}}
-\end{figure}
-
-% discrete boundaries here?
-Recalling \eqref{eq:lambdaDef} can rewrite Eq. \eqref{eq:CFL} in terms of grid spacing $h$ to get
+which is referred to as the Courant-Friedrichs-Lewy (CFL) stability condition. The closer $\lambda$ is to this condition, the higher the quality of the simulation (see Section \ref{sec:quality}) and if $\lambda = 1$, Eq. \eqref{eq:updateEq} provides an exact solution to Eq. \eqref{eq:1dwave}%(this is true for the 1D wave equation)
+% (see Figures \ref{fig:dispersion}a and \ref{fig:dispersion}b)
+. If $\lambda > 1$ the system will become unstable
+%  (see Figures \ref{fig:dispersion}a and \ref{fig:dispersion}b)
+.
+% \begin{figure}[t]
+%     \centering
+%     % \subfloat[]{\label{fig:lambda1}{ \includegraphics[width=0.3\textwidth]{Figures/ulnLambda1.eps}}}
+%     % \subfloat[]{\label{fig:lambda0.9}{ \includegraphics[width=0.3\textwidth]{Figures/ulnLambda09.eps}}}
+%     % \subfloat[]{\label{fig:lambda1.001}{ \includegraphics[width=0.3\textwidth]{Figures/ulnLambda1001.eps}}}
+%     \includegraphics[width=0.8\columnwidth]{Figures/dispersionCompact.eps}
+%     \caption{State $\ugen_l^n$ with $N = 50$ and $f_\text{s} = 44100$ visualised $\sim\!100$ samples after excitation. (a) If $\lambda = 1$, the solution is exact. (b) If $\lambda < 1$ dispersive behaviour shows. (c) If $\lambda > 1$ the CFL condition in Eq. \eqref{eq:CFL} is not satisfied and the system is unstable. \SWcomment[If $\ugen$ is used, don't forget to change in the figure!!]
+%     \label{fig:dispersion}}
+% \end{figure}
+%
+Recalling \eqref{eq:lambdaDef}, Eq. \eqref{eq:CFL} can be rewritten in terms of grid spacing $h$ to get
 \begin{equation}\label{eq:stabilityCond}
     h \geq ck.
 \end{equation}
@@ -83,20 +87,21 @@ The flooring operation causes the CFL condition in \eqref{eq:CFL} to not always 
 
 \subsection{Simulation Quality}\label{sec:quality}
 %As mentioned above, the Courant number $\lambda$ decides the quality of the simulation. 
-Choosing $\lambda < 1$ in Eq. \eqref{eq:updateEq} will decrease the simulation quality in two ways. Firstly, it will decrease the maximum frequency that the simulation is able to produce, i.e., it will decrease the bandwidth of the output sound of the system. See Figure \ref{fig:bandWidths}.
+Choosing $\lambda < 1$ in Eq. \eqref{eq:updateEq} will decrease the simulation quality in two ways. Firstly, it will decrease the maximum frequency that the simulation is able to produce, i.e., it will decrease the bandwidth of the output sound of the system. 
+%See Figure \ref{fig:bandWidths}.
 
-\begin{figure}[t]
-    \centering
-    % \subfloat[]{\label{fig:bandwidth1}{ \includegraphics[width=0.3\textwidth]{Figures/bandwidthLambda1.eps}}}
-    % \subfloat[]{\label{fig:bandwidth09}{ \includegraphics[width=0.3\textwidth]{Figures/bandwidthLambda09.eps}}}
-    % \subfloat[]{\label{fig:bandwidth05}{ \includegraphics[width=0.3\textwidth]{Figures/bandwidthLambda05.eps}}}
-    \includegraphics[width=0.9\columnwidth]{Figures/bandwidthCompact.eps}
-    \caption{Bandwidths of the simulation output %at $l = 16$ 
-    with $f_\text{s} = 44100$ Hz and 
-    %$N = 50$ excited with a raised cosine with a width of 5 at center-location $N = 25$. The Courant number is set to 
-    (a) $\lambda = 1$, (b) $\lambda = 0.9$ and (c) $\lambda = 0.5$. 
-    \label{fig:bandWidths}}
-\end{figure}
+% \begin{figure}[t]
+%     \centering
+%     % \subfloat[]{\label{fig:bandwidth1}{ \includegraphics[width=0.3\textwidth]{Figures/bandwidthLambda1.eps}}}
+%     % \subfloat[]{\label{fig:bandwidth09}{ \includegraphics[width=0.3\textwidth]{Figures/bandwidthLambda09.eps}}}
+%     % \subfloat[]{\label{fig:bandwidth05}{ \includegraphics[width=0.3\textwidth]{Figures/bandwidthLambda05.eps}}}
+%     \includegraphics[width=0.9\columnwidth]{Figures/bandwidthCompact.eps}
+%     \caption{Bandwidths of the simulation output %at $l = 16$ 
+%     with $f_\text{s} = 44100$ Hz and 
+%     %$N = 50$ excited with a raised cosine with a width of 5 at center-location $N = 25$. The Courant number is set to 
+%     (a) $\lambda = 1$, (b) $\lambda = 0.9$ and (c) $\lambda = 0.5$. 
+%     \label{fig:bandWidths}}
+% \end{figure}
 %
 By analysing the scheme in Eq. \eqref{eq:updateEq}, it can be shown that the maximum frequency produced by the system can be calculated using $f_\text{max} = f_\text{s} \sin^{-1}(\lambda)/\pi$ \cite[Chap. 6]{bilbao2009}.
 % \begin{equation}\label{eq:fmax}
@@ -112,6 +117,7 @@ Note that only a small deviation of $\lambda$ from condition \eqref{eq:CFL} alre
 % \includegraphics[width=0.8\reprintcolumnwidth]{bandwidthPlot}
 % \caption{\label{fig:bandWidthFormula}{The effect of the Courant number $\lambda$ on the output bandwidth. \SWcomment[This figure should probably be much more compact, if not removed altogether.]}}
 % \end{figure} 
-Secondly, choosing $\lambda < 1$ causes numerical dispersion. See Figures \ref{fig:dispersion}b and \ref{fig:bandWidths}. Harmonic partials get closer together at higher frequencies (i.e. get more inharmonic) as $\lambda$ decreases, which is generally undesirable.
+Secondly, choosing $\lambda < 1$ causes numerical dispersion. %See Figures \ref{fig:dispersion}b and \ref{fig:bandWidths}. 
+Harmonic partials get closer together at higher frequencies (i.e. get more inharmonic) as $\lambda$ decreases, which is generally undesirable.
 
 %\SWcomment[can cut this paragraph $\rightarrow$] Apart from the recalculation of $\lambda$ due to the flooring operation in Eq. \eqref{eq:orderOfCalcGrid}, a reason that one would choose $\lambda < 1$ could be to decrease the total number of grid points used in the simulation by increasing $h$. This makes the simulation less computationally expensive, while keeping a desired wave speed $c$ and time step $k$. For 1-dimensional systems such as the 1D wave equation, this is rarely necessary.
