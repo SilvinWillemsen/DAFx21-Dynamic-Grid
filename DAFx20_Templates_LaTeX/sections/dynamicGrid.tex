@@ -305,7 +305,8 @@ where the definitions for the virtual grid points from the second term are defin
 
 \subsubsection{Adding and removing Grid Points}
 When $c$, and consequently $h$, is decreased and the inner boundary points surpass the virtual points (i.e. $x_{u_M}^n \leq x_{w_{-1}}^n$ and $x_{w_0}^n \geq x_{u_{M+1}}^n$ or $
-\alpha \geq 1$) and $N^n >  N^{n-1}$, a point is added to the right boundary of $u$ and the left boundary of $w$ (for both time indices $n$ and $n-1$) in an alternating fashion \SWcomment[as the best way turns out to be adding/removing close to the boundary to $\mathbf{u}$ (or $\mathbf{w}$) only (as described in the paragraph right before Section \ref{sec:dispCorr}), maybe this can be shortened/rewritten]: 
+\alpha \geq 1$) and $N^n >  N^{n-1}$, a point is added to the right boundary of $u$ and the left boundary of $w$ (for both time indices $n$ and $n-1$) in an alternating fashion %\SWcomment[as the best way turns out to be adding/removing close to the boundary to $\mathbf{u}$ (or $\mathbf{w}$) only (as described in the paragraph right before Section \ref{sec:dispCorr}), maybe this can be shortened/rewritten]
+: 
 \begin{equation}\label{eq:addingPoint}
         \begin{cases}\mathbf{u}^n = [\mathbf{u}^n, I_3\mathbf{v}^n]^T & \text{if $N^n $ is odd},\\
         \mathbf{w}^n = [I_3^\flip\mathbf{v}^n, \mathbf{w}^n]^T & \text{if $ N^n$ is even},
