@@ -2,11 +2,12 @@
 This section will provide a brief introduction to physical modelling using FDTD methods, including details on stability and quality of the simulations based on these methods.
 
 \subsection{Discretisation}
-Using FDTD methods, the continuous 1D wave equation in Eq. \eqref{eq:1dwave} can be discretised into points in space and time. The spatial variable can be discretised using $x_l = lh$ %(read: $x$ at spatial index $l$) 
-with integer $l \in [0, \hdots, N]$, distance between two consecutive grid points $h$ (in m), also referred to as the grid spacing, and total number of points $N + 1$ (including the boundaries) where the total number of intervals between the grid points is described as
+In FDTD methods, the first step is the definition of a grid. The spatial variable can be discretised using $x_l = lh$ %(read: $x$ at spatial index $l$) 
+with integer $l \in [0, \hdots, N]$. distance between two consecutive grid points $h$ (in m), also referred to as the grid spacing, and total number of points $N + 1$ (including the boundaries) where the total number of intervals between the grid points is described as
 \begin{equation}\label{eq:numberOfIntervals}
     N = \lfloor L/h\rfloor,
 \end{equation}
+\SBcomment[Easier to write this as $h=L/N$, for integer $N$, so without a flooring operation.] \SWcomment[hmm.. this flooring operation is important for the comparison with $\Nfrac$ (fractional $N$) later on. Just clearly shows $N$ ``integerness" :)]\SBcomment[OK, but from the above, we don't have $L=Nh$, so the total domain length is off...well, at least for a standard domain!]\SWcomment[gotcha, I'll figure this out.. (something with \eqref{eq:orderOfCalcGrid} perhaps..)]
 with $\lfloor \cdot \rfloor$ denoting the flooring operation. The temporal variable can be discretised using $t_n = nk$ with positive integer $n$, time step $k = 1/f_\text{s}$ (in s) and sample rate $f_\text{s}$ (in Hz). The state variable $\ugen$ can then be approximated using $\ugen(x,t) \approx \ugen_l^n$, where grid function $\ugen_l^n$ is the displacement of $\ugen$ at spatial index $l$ and time index $n$. %The total state at time index $n$ is then denoted as vector $\mathbf{u}^n$ with size $N+1$.
 
 The following operators can then be applied to $\ugen_l^n$ to get the following approximations to the derivatives in Eq. \eqref{eq:1dwave}

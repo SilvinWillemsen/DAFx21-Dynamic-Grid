@@ -1,10 +1,11 @@
-\section{The Dynamic Grid}
+\section{The Dynamic Grid}\label{sec:dynamicGrid}
 If we want to dynamically change parameters of our model, in this case the wave speed $c$, there are several aspects that need to be taken into account in a discrete setting. First of all, a change in $c$ causes a change in $\lambda$ according to Eq. \eqref{eq:compactLambda}, affecting the simulation quality and bandwidth. Secondly, and more importantly, a change in $c$ could result in a change in $N$ through Eq. \eqref{eq:numberOfIntervals}. As $N$ directly relates to the number of grid points, this raises questions as to \textit{where} and especially \textit{how} one would add and remove points to the grid according to the now-dynamic wave speed.
 
 We propose a method that allows for a non-integer number of intervals to smoothly change between grid configurations, i.e, the number of grid points. This removes the necessity of the flooring operation in Eq. \eqref{eq:numberOfIntervals} and Eq. \eqref{eq:compactLambda}, and consequently satisfies the CFL condition in \eqref{eq:CFL} with equality at all times. Introducing fractional number of intervals $\Nfrac$, where $N = \lfloor \Nfrac\rfloor$, Eq. \eqref{eq:fundamentalFreqCont} can be rewritten in terms of $\Nfrac$ by substituting Eq. \eqref{eq:numberOfIntervals} into Eq. \eqref{eq:fundamentalFreqCont} (using Eq. \eqref{eq:stabilityCond} satisfied with equality) yielding
 \begin{equation}\label{eq:fundamentalFreq}
     f_0 = \frac{1}{2\Nfrac k}\quad \text{with}\quad \Nfrac = L/h.
 \end{equation}
+\SWcomment[shouldn't $\Nfrac$, $h$, $c$, $M$, $M_w$ all get the $n$ superscript from here onwards?]
 This shows that if $\lambda = 1$, $\Nfrac$ solely determines the fundamental frequency of the simulation. 
 
 % As mentioned in the previous section, the goal of this paper is to achieve real-time  parameter changes by dynamically changing grid configurations, in order to prevent undesirable behaviour such as a decrease in bandwidth and increase in numerical dispersion. % discussed in Section \ref{sec:quality}. %This section will describe the problems that arise when adding and removing grid points. Afterwards, some iterations done over the course of this project and their drawbacks will be shown, leading up to the final implementation of the dynamic grid. 
@@ -118,7 +119,7 @@ Expanding the spatial operators in system \eqref{eq:systemHalfStrings} at inner 
 Because of Eq. \eqref{eq:rigid}, it is also true that $\delta_{tt}u_M^n = \delta_{tt}w_0^n, \ \forall n$, and $F$ can be calculated by setting the right side of the equations in \eqref{eq:expandedSystem} equal to each other:
 \begin{align*}
      \frac{c^2}{h^2}(2u_{M-1}^n-2u_M^n) + \frac{1}{h} F&= 
-     \frac{c^2}{h^2}(2w_1^n-2w_0^n) - \frac{1}{h} F\nonumber\\
+     \frac{c^2}{h^2}(2w_1^n-2w_0^n) - \frac{1}{h} F,\nonumber\\
     % \frac{2}{h}F &= \frac{c^2}{h^2}(2w_1^n - 2u_{M-1}^n)\nonumber\\
     F &= h \frac{c^2}{h^2}(w_1^n - u_{M-1}^n).
 \end{align*}
@@ -304,12 +305,10 @@ Rewriting system \eqref{eq:systemHalfStrings} to include this yields
 where the definitions for the virtual grid points from the second term are defined by the Neumann boundary condition in Eq. \eqref{eq:discreteNeumann} and those from the last terms are found in Eqs. \eqref{eq:connectionInterpol}.
 
 \subsubsection{Adding and removing Grid Points}
-When $c$, and consequently $h$, is decreased and the inner boundary points surpass the virtual points (i.e. $x_{u_M}^n \leq x_{w_{-1}}^n$ and $x_{w_0}^n \geq x_{u_{M+1}}^n$ or $
-\alpha \geq 1$) and $N^n >  N^{n-1}$, a point is added to the right boundary of $u$ and the left boundary of $w$ (for both time indices $n$ and $n-1$) in an alternating fashion %\SWcomment[as the best way turns out to be adding/removing close to the boundary to $\mathbf{u}$ (or $\mathbf{w}$) only (as described in the paragraph right before Section \ref{sec:dispCorr}), maybe this can be shortened/rewritten]
-: 
+When $c$, and consequently $h$, is decreased and the inner boundary points surpass the virtual points (i.e. $x_{u_M}^n \leq x_{w_{-1}}^n$ and $x_{w_0}^n \geq x_{u_{M+1}}^n$) and $N^n >  N^{n-1}$, a point is added to the right boundary of $u$ and the left boundary of $w$ (for both time indices $n$ and $n-1$) in an alternating fashion: 
 \begin{equation}\label{eq:addingPoint}
-        \begin{cases}\mathbf{u}^n = [\mathbf{u}^n, I_3\mathbf{v}^n]^T & \text{if $N^n $ is odd},\\
-        \mathbf{w}^n = [I_3^\flip\mathbf{v}^n, \mathbf{w}^n]^T & \text{if $ N^n$ is even},
+        \begin{cases}\mathbf{u}^n = [(\mathbf{u}^n)^T, I_3\mathbf{v}^n]^T & \text{if $N^n $ is odd},\\
+        \mathbf{w}^n = [I_3^\flip\mathbf{v}^n, (\mathbf{w}^n)^T]^T & \text{if $ N^n$ is even},
         \end{cases}
 \end{equation}
 where 
@@ -366,7 +365,7 @@ Furthermore, using centered temporal averaging and first-order difference operat
     \mu_{t\cdot}\ugen_l^n &= \frac{1}{2} \left(\ugen_l^{n+1} + \ugen_l^{n-1}\right)\\
     \delta_{t\cdot}\ugen_l^n &= \frac{1}{2k} \left(\ugen_l^{n+1} - \ugen_l^{n-1}\right)
 \end{align}
-the correction effect (in m$^2/$s$^2$) is modelled as a spring-like connection and is defined as
+the correction effect (in m$^2/$s$^2$) %\SWcomment[something off with the units here. I think I took this from the scaled version and assumed that $J$ has units of m$^{-1}$ (due to $1/h$).] is modelled as a spring-like connection and is defined as
 \begin{equation}\label{eq:dispCorrForce}
     F_\text{c} = \beta \left(\omega_0^2\mu_{t\cdot}\eta^n +\sigma_0\delta_{t\cdot}\eta^n \right).
 \end{equation}
@@ -378,7 +377,7 @@ with the difference in displacement between the inner boundaries
 \begin{equation}\label{eq:betaDef}
     \beta = \frac{1-\alpha}{\alpha + \varepsilon}\ ,
 \end{equation}
-where $\varepsilon \ll 1$ prevents a division by 0. Despite Eq. \eqref{eq:centeredAverage}, it is possible to calculate the force explicitly (such as in \cite{bilbao2009} or \cite{bilbao2009Dafx}). Furthermore, it can be shown that this calculation is defined, even for $\alpha  = \varepsilon = 0$ which acts as a rigid connection such as Eq. \eqref{eq:rigid}.
+(in m) \SWcomment[for the units to make sense... I guess it includes the $1/\rho A$ (for a 1D wave modelling a string without stiffness) but as it is an artificial connection force, it might make more sense to exclude all units here..] where $\varepsilon \ll 1$ prevents a division by 0. Despite Eq. \eqref{eq:centeredAverage}, it is possible to calculate the force explicitly (such as in \cite{bilbao2009} or \cite{bilbao2009Dafx}). Furthermore, it can be shown that this calculation is defined, even for $\alpha  = \varepsilon = 0$ which acts as a rigid connection such as Eq. \eqref{eq:rigid}.
 %$\beta$ can be seen as a spring force pulling the inner boundaries to the average displacement between them. A lower $\varepsilon$ decreases the chance of artifacts but will have a greater filtering effect on the system. For low-speed changes, using $\sim 1000$ samples for removing one grid point, $\varepsilon \approx 30$ ensures that $u_M^n \approx w_0^n$ at the time of removal and already suffices to remove artefacts.
 
 % 

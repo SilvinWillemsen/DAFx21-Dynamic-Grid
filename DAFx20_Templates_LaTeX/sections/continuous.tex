@@ -4,23 +4,23 @@
 %
 %using the famous 1D wave equation.
 %
-The physics of dynamic systems is commonly described using partial differential equations (PDEs) operating in continuous time. To aid the illustration of the proposed method, the 1D wave equation will be used. This does not mean that the method is limited to this, and could be extended to other systems, possibly even higher dimensional ones.
+% The physics of dynamic systems is commonly described using partial differential equations (PDEs) operating in continuous time. To aid the illustration of the proposed method, the 1D wave equation will be used. This does not mean that the method is limited to this, and could be extended to other systems, possibly even higher dimensional ones.
 
-The 1D wave equation may be written
+The wave equation is a useful starting point for investigations of time-varying behaviour in musical instruments. The 1D wave equation may be written as
 \begin{equation}\label{eq:1dwave}
     \frac{\partial^2 \ugen}{\partial t^2}= c^2\frac{\partial^2 \ugen}{\partial x^2}\ ,
 \end{equation}
-and is defined over spatial domain $x \in [0, L]$, for length $L$ (in m) and time $t \geq 0$ (in s). $c$ (in m/s) is the wave speed. The dependent variable $\ugen(x,t)$ in Eq. \eqref{eq:1dwave} may be interpreted as the transverse displacement of an ideal string, or the acoustic pressure in the case of a cylindrical tube. Two possible choices of boundary conditions are
+and is defined over spatial domain $x \in [0, L]$, for length $L$ (in m) and time $t \geq 0$ (in s). $c$ (in m/s) is the wave speed. The dependent variable $\ugen = \ugen(x,t)$ in Eq. \eqref{eq:1dwave} may be interpreted as the transverse displacement of an ideal string, or the acoustic pressure in the case of a cylindrical tube. Two possible choices of boundary conditions are
 \begin{subequations}\label{eq:continuousBoundaries}
     \begin{align}
         \ugen(0, t) = \ugen(L, t) &= 0\quad \text{(Dirichlet)},\label{eq:contDirichlet}\\
         \frac{\partial}{\partial x} \ugen(0, t) = \frac{\partial}{\partial x} \ugen(L, t) &= 0\quad \text{(Neumann)},\label{eq:contNeumann}
     \end{align}
 \end{subequations}
-which describe a `fixed' and `free' boundary respectively in the case of an ideal string, and `open' and `closed' conditions respectively in the case of a cylindrical acoustic tube.
+and describe `fixed' or `free' boundary respectively in the case of an ideal string, and `open' or `closed' conditions respectively in the case of a cylindrical acoustic tube.
 
 \subsection{Dynamic parameters}\label{sec:dynamicParamsCont}
-In the case of the 1D wave equation, only the wave speed $c$ and length $L$ can be altered. If Dirichlet-type boundary conditions -- as in Eq. \eqref{eq:contDirichlet} -- are used, and under static conditions the fundamental frequency $f_0$ of the 1D wave equation can be calculated according to
+In the case of the 1D wave equation, only the wave speed $c$ and length $L$ can be altered (in the case of an acoustic tube, only $L$ is variable, and for a string, $c$ could exhibit variations through changes in tension). If Dirichlet-type boundary conditions -- as in Eq. \eqref{eq:contDirichlet} -- are used, and under static conditions the fundamental frequency $f_0$ of the 1D wave equation can be calculated according to
 \begin{equation}\label{eq:fundamentalFreqCont}
     f_0 = \frac{c}{2L}.
 \end{equation}
@@ -29,4 +29,4 @@ In the dynamic case, and under slow (sub-audiorate) variations of $c$ or $L$, Eq
 %
 From Eq. \eqref{eq:fundamentalFreqCont}, one can easily conclude that in terms of fundamental frequency, halving the length of Eq. \eqref{eq:1dwave} is identical to doubling the wave speed and vice versa. Looking at Eq. \eqref{eq:1dwave} in isolation, $f_0$ is the only behaviour that can be changed. One can thus leave $L$ fixed %($L = 1$ for simplicity) 
 and make $c$ dynamic (or time-varying), i.e., $c = c(t)$, which will prove easier to work with in the following section.
-\SBcomment[OK: here, need to refer back to the two primary cases here: the trombone, and the string under variable tensioning, and justify the use of a time-varying $c$ only in these cases. Otherwise this becomes too abstract. ] {\color{Cyan} I feel like I need to talk about scaling here and how this confirms this statement ($f_0 = \gamma/2$ with $\gamma = c/L$ and scaled space $x \in [0, 1]$).}
+\SBcomment[OK: here, need to refer back to the two primary cases here: the trombone, and the string under variable tensioning, and justify the use of a time-varying $c$ only in these cases. Otherwise this becomes too abstract. ] {\color{Cyan} I feel like I need to talk about scaling here and how this confirms this statement ($f_0 = \gamma/2$ with $\gamma = c/L$ and scaled space $x \in [0, 1]$).} \SBcomment[Well, it looks like in the rest of the paper, you've got everything dimensional. Do you want to go for a fully non-dimensional domain $x\in(0,1)$, so you have $\gamma$ in there? Then you could deal with this issue right here. ] \SWcomment[hmm.. isn't there something we can say about the 1D wave and how this applies here? I want to keep this general (unscaled).. also as I am going to change $L$ in the trombone paper.. something like "This can more easily be seen if Eq. \eqref{eq:1dwave} is scaled or non-dimensionalised as in \cite{bilbao2009} where $x\in(0, 1)$ and $\gamma = c/L$. To retain generality, we continue with the unscaled case."]
