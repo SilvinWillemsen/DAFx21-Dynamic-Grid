@@ -360,9 +360,9 @@ A problem that arises from increasing $h$, is that it is possible that $u_M^n \n
     \delta_{tt}w_\lw^n = c^2\delta_{xx}w_\lw^n - J_w(x_{w_0}^n)\left(2c^2\delta_{x\cdot}w_0^n+F_\text{c}\right)
 \end{cases}
 \end{equation}
-Furthermore, using centered temporal averaging and first-order difference operators
-\begin{subequations}\label{eq:centeredOperators}
-\begin{align}\label{eq:centeredAverage}
+Furthermore, using centred temporal averaging and first-order difference operators
+\begin{subequations}\label{eq:centredOperators}
+\begin{align}\label{eq:centredAverage}
     \mu_{t\cdot}\ugen_l^n &= \frac{1}{2} \left(\ugen_l^{n+1} + \ugen_l^{n-1}\right)\\
     \delta_{t\cdot}\ugen_l^n &= \frac{1}{2k} \left(\ugen_l^{n+1} - \ugen_l^{n-1}\right)
 \end{align}
@@ -379,7 +379,7 @@ with the difference in displacement between the inner boundaries
 \begin{equation}\label{eq:betaDef}
     \beta = \frac{1-\alpha}{\alpha + \varepsilon}\ ,
 \end{equation}
-(in m) \SWcomment[for the units to make sense... I guess it includes the $1/\rho A$ (for a 1D wave modelling a string without stiffness) but as it is an artificial connection force, it might make more sense to exclude all units here..] where $\varepsilon \ll 1$ prevents a division by 0. Despite the operators in \eqref{eq:centeredOperators}, introducing states at $n+1$, it is possible to calculate the force explicitly (such as in \cite{bilbao2009} or \cite{bilbao2009Dafx}). Furthermore, it can be shown that this calculation is defined, even for $\alpha  = \varepsilon = 0$ which acts as a rigid connection such as Eq. \eqref{eq:rigid}.
+(in m) \SWcomment[for the units to make sense... I guess it includes the $1/\rho A$ (for a 1D wave modelling a string without stiffness) but as it is an artificial connection force, it might make more sense to exclude all units here..] where $\varepsilon \ll 1$ prevents a division by 0. Despite the operators in \eqref{eq:centredOperators}, introducing states at $n+1$, it is possible to calculate the force explicitly (such as in \cite{bilbao2009} or \cite{bilbao2009Dafx}). Furthermore, it can be shown that this calculation is defined, even for $\alpha  = \varepsilon = 0$ which acts as a rigid connection such as Eq. \eqref{eq:rigid}.
 %$\beta$ can be seen as a spring force pulling the inner boundaries to the average displacement between them. A lower $\varepsilon$ decreases the chance of artifacts but will have a greater filtering effect on the system. For low-speed changes, using $\sim 1000$ samples for removing one grid point, $\varepsilon \approx 30$ ensures that $u_M^n \approx w_0^n$ at the time of removal and already suffices to remove artefacts.
 
 % 
