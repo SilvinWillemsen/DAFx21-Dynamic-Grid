@@ -1,9 +1,9 @@
 \section{Numerical methods}\label{sec:FDTD}
-This section will provide a brief introduction to physical modelling using FDTD methods, including details on stability and quality of the simulations based on these methods.
+This section will provide a brief introduction to physical modelling using FDTD methods, including details on stability and quality of the simulations based on these methods. In the following, $c$ is left static.
 
 \subsection{Discretisation}
 In FDTD methods, the first step is the definition of a grid. The spatial variable can be discretised using $x_l = lh$ %(read: $x$ at spatial index $l$) 
-with integer $l \in [0, \hdots, N]$. distance between two consecutive grid points $h$ (in m), also referred to as the grid spacing, and total number of points $N + 1$ (including the boundaries) where the total number of intervals between the grid points is described as
+with integer $l \in [0, \hdots, N]$. The grid spacing $h$ (in m) is the distance between adjacent grid points, and the total number of points covering the domain, including endpoints, is $N + 1$, where the total number of intervals between the grid points is described as
 \begin{equation}\label{eq:numberOfIntervals}
     N = \lfloor L/h\rfloor,
 \end{equation}
@@ -21,18 +21,19 @@ Substituting these definitions into Eq. \eqref{eq:1dwave} yields the following f
 \begin{equation}\label{eq:FDS}
     \delta_{tt}\ugen_l^n = c^2 \delta_{xx}\ugen_l^n.
 \end{equation}
+
 Expanding the operators as in %the Eqs. in
 \eqref{eq:operators} and solving for $\ugen_l^{n+1}$ yields the following update equation
 \begin{equation}\label{eq:updateEq}
     \ugen_l^{n+1} = 2\ugen_l^n-\ugen_l^{n-1} + \lambda^2 \left(\ugen_{l+1}^n-2\ugen_l^n + \ugen_{l-1}^n\right).
 \end{equation}
 %saying that $\ugen$ at the next time index ($n+1$) can be calculated using only values of $\ugen$ at the current ($n$) and previous time indices ($n-1$).
-which can be implemented in software. %This update can then be implemented in software, such as {\tt MATLAB} or {\tt C++}. 
+which is suitable for direct software implementation. %This update can then be implemented in software, such as {\tt MATLAB} or {\tt C++}. 
 Here,
 \begin{equation}\label{eq:lambdaDef}
     \lambda = \frac{ck}{h}
 \end{equation}
-is referred to as the Courant number and determines the stability, as well as the quality and behaviour of the simulation. This will be described in detail in Sections \ref{sec:stability} and \ref{sec:quality}.
+is referred to as the Courant number, constrained by numerical stability conditions, and also has an impact on the quality and behaviour of the simulation. This will be described in detail in Sections \ref{sec:stability} and \ref{sec:quality}.
 
 In the FDS described in Eq. \eqref{eq:FDS}, the boundary locations are at $l = 0$ and $l = N$. Substituting these locations into Eq. \eqref{eq:updateEq} seemingly shows that grid points outside of the defined domain are needed, namely $\ugen_{-1}^n$ and $\ugen_{N+1}^n$. These can be referred to as \textit{virtual grid points} and can be accounted for using the boundary conditions in Eq. \eqref{eq:continuousBoundaries}. Discretising these yields
 \begin{subequations}
@@ -50,14 +51,14 @@ is a second-order accurate approximation of the first-order spatial derivative. 
     \ugen_{-1}^n = \ugen_1^n \quad \text{and} \quad \ugen_{N+1}^n = \ugen_{N-1}^n\,.
 \end{equation}
 
-Now that the full system is described, the output sound can be retrieved by `recording' the state $\ugen_l^n$ in Eq. \eqref{eq:updateEq} at $0 < l < N$ (when using fixed boundary conditions) and listening to that at the given sample rate $f_\text{s}$. %Though the output location does not change the behaviour of the system, it will determine the amplitude of different harmonic partials in the system output.
+Now that the full system is described, audio output at sample rate $f_\text{s}$ can be drawn from the state $\ugen_l^n$ in Eq. \eqref{eq:updateEq} at $0 < l < N$ (when using fixed boundary conditions). %Though the output location does not change the behaviour of the system, it will determine the amplitude of different harmonic partials in the system output.
 
 \subsection{Stability}\label{sec:stability}
-Discretising continuous equations using numerical methods places limits on the parameters describing it. A wrong choice of parameters could render the system unstable and make it ``explode". In the case of the update in Eq. \eqref{eq:updateEq} it can be shown -- using Von Neumann analysis \cite{Strikwerda1989} -- that the system is stable if
+Explicit FDTD methods for hyperbolic systems such as the 1D wave equation must necessarily satisfy a stability condition. In the case of the update in Eq. \eqref{eq:updateEq} it can be shown -- using von Neumann analysis \cite{Strikwerda1989} -- that the system is stable if
 \begin{equation}\label{eq:CFL}
     \lambda \leq 1,
 \end{equation}
-which is referred to as the Courant-Friedrichs-Lewy (CFL) stability condition. The closer $\lambda$ is to this condition, the higher the quality of the simulation (see Section \ref{sec:quality}) and if $\lambda = 1$, Eq. \eqref{eq:updateEq} provides an exact solution to Eq. \eqref{eq:1dwave}%(this is true for the 1D wave equation)
+which is referred to as the Courant-Friedrichs-Lewy (CFL) condition. The more closely $\lambda$ approaches this condition with equality, the higher the quality of the simulation (see Section \ref{sec:quality}) and if $\lambda = 1$, Eq. \eqref{eq:updateEq} yields an exact solution to Eq. \eqref{eq:1dwave}%(this is true for the 1D wave equation)
 % (see Figures \ref{fig:dispersion}a and \ref{fig:dispersion}b)
 . If $\lambda > 1$ the system will become unstable
 %  (see Figures \ref{fig:dispersion}a and \ref{fig:dispersion}b)
@@ -110,7 +111,7 @@ By analysing the scheme in Eq. \eqref{eq:updateEq}, it can be shown that the max
 % \end{equation}
 % shown in Figure \ref{fig:bandWidthFormula}.
 %
-Note that only a small deviation of $\lambda$ from condition \eqref{eq:CFL} already has a profound effect on the bandwidth of the output.
+Note that only a small deviation of $\lambda$ from condition \eqref{eq:CFL} leads to a large reduction in output bandwidth.
 %
 % \begin{figure}
 % %% \reprintcolumnwidth is the same in preprint and reprint for
@@ -119,6 +120,6 @@ Note that only a small deviation of $\lambda$ from condition \eqref{eq:CFL} alre
 % \caption{\label{fig:bandWidthFormula}{The effect of the Courant number $\lambda$ on the output bandwidth. \SWcomment[This figure should probably be much more compact, if not removed altogether.]}}
 % \end{figure} 
 Secondly, choosing $\lambda < 1$ causes numerical dispersion. %See Figures \ref{fig:dispersion}b and \ref{fig:bandWidths}. 
-Harmonic partials get closer together at higher frequencies (i.e. get more inharmonic) as $\lambda$ decreases, which is generally undesirable.
+Harmonic partials become unnaturally closely spaced at higher frequencies (i.e. spurious inharmonicity increases) as $\lambda$ decreases, which is generally undesirable.
 
 %\SWcomment[can cut this paragraph $\rightarrow$] Apart from the recalculation of $\lambda$ due to the flooring operation in Eq. \eqref{eq:orderOfCalcGrid}, a reason that one would choose $\lambda < 1$ could be to decrease the total number of grid points used in the simulation by increasing $h$. This makes the simulation less computationally expensive, while keeping a desired wave speed $c$ and time step $k$. For 1-dimensional systems such as the 1D wave equation, this is rarely necessary.
