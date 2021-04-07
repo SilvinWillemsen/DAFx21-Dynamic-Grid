@@ -5,7 +5,7 @@ We propose a method that allows for a non-integer number of intervals to smoothl
 \begin{equation}\label{eq:fundamentalFreq}
     f_0 = \frac{1}{2\Nfrac k}\quad \text{with}\quad \Nfrac = L/h.
 \end{equation}
-\SWcomment[shouldn't $\Nfrac$, $h$, $c$, $M$, $M_w$ all get the $n$ superscript from here onwards?]\SBcomment[Yes! And $f_{0}$ too.] \SWcomment[Alright, I added it to the intro of \ref{sec:proposedMethod} (or do you think from here already?)]
+\SWcomment[shouldn't $\Nfrac$, $h$, $c$, $M$, $M_w$ all get the $n$ superscript from here onwards?]\SBcomment[Yes! And $f_{0}$ too.] \SWcomment[Alright, I added it to the intro of \ref{sec:proposedMethod} (or do you think from the start of this section already?)]
 This shows that if $\lambda = 1$, $\Nfrac$ solely determines the fundamental frequency of the simulation. 
 
 % As mentioned in the previous section, the goal of this paper is to achieve real-time  parameter changes by dynamically changing grid configurations, in order to prevent undesirable behaviour such as a decrease in bandwidth and increase in numerical dispersion. % discussed in Section \ref{sec:quality}. %This section will describe the problems that arise when adding and removing grid points. Afterwards, some iterations done over the course of this project and their drawbacks will be shown, leading up to the final implementation of the dynamic grid. 
@@ -19,7 +19,7 @@ This shows that if $\lambda = 1$, $\Nfrac$ solely determines the fundamental fre
 Ideally, a method that dynamically changes the grid size of a finite difference scheme should
 \begin{enumerate}
     \item generate an output with a fundamental frequency $f_0$ %described by Eq. \eqref{eq:fundamentalFreq} 
-    which is linearly proportional\SBcomment[Don't get the "linearly proportional to" part here.] \SWcomment[you mean I can remove `linearly'?] to the wave speed $c$ ($f_0 \propto c$),
+    which is linearly proportional\SBcomment[Don't get the "linearly proportional to" part here.] \SWcomment[you mean that I can remove `linearly'?] to the wave speed $c$ ($f_0 \propto c$),
     \item allow for a fractional number of intervals $\Nfrac$ to smoothly transition between different grid configurations% so that no auditory artefacts are present in the output sound,
     \item generate an output containing $ N-1$ modes which are integer multiples of the fundamental ($f_p = f_0 p$ with integer $p$),
     % \item generate an output with $\lfloor N\rfloor-1$ modes corresponding to the number of moving points of the system ($p = [1, \hdots, \allowbreak\lfloor N\rfloor-1]$),
@@ -158,7 +158,7 @@ If the wave speed $c^n$ is then decreased, and consequently the grid spacing $h^
 % \caption{\label{fig:twoFreeStringsGridMove}{When the grid changes ($\Nfrac = 30.5$). The x-axis shows the location (in m) of the respective grid points (fx. $x_{u_l^n}$), but the $x$ is omitted for clarity.}}
 % \end{figure}
 
-As mentioned in Section \ref{sec:systSetup}, the state of the virtual grid points at the inner boundaries are defined as $u_{M+1}^n = w_1^n$ and $w_{-1}^n = u_{M-1}^n$ when the inner boundaries are perfectly overlapping  (i.e., $x^n_{u_M} = x^n_{w_0}$). If this is not the case (i.e., $x^n_{u_M} \neq x^n_{w_0}$) a Lagrangian interpolator $I(x_i^n)$ at location $x_i^n$ from the left boundary (in m) can be used to calculate the value of these virtual grid points (also see Figure \ref{fig:twoFreeStringsGridZoomed} for reference). The interpolator $I$ is a row-vector the same length as $\mathbfcal{U}^n$ (from Eq. \eqref{eq:fullState}) and its values depend on the interpolation order. In the following the fractional part of $\Nfrac^n$ %distance between the inner boundaries normalised by $h$ 
+As mentioned in Section \ref{sec:systSetup}, the state of the virtual grid points at the inner boundaries are defined as $u_{M+1}^n = w_1^n$ and $w_{-1}^n = u_{M-1}^n$ when the inner boundaries are perfectly overlapping  (i.e., $x^n_{u_M} = x^n_{w_0}$). If this is not the case (i.e., $x^n_{u_M} \neq x^n_{w_0}$) a Lagrangian interpolator $I(x_i^n)$ at location $x_i^n$ from the left boundary (in m) can be used to calculate the value of these virtual grid points (also see Figure \ref{fig:twoFreeStringsGridZoomed} for reference). The interpolator $I$ is a row-vector with the same length as $\mathbfcal{U}^n$ (from Eq. \eqref{eq:fullState}) and its values depend on the interpolation order. In the following the fractional part of $\Nfrac^n$ %distance between the inner boundaries normalised by $h$ 
 is defined as 
 \begin{equation}\label{eq:alphaDef}
     \alpha = \alpha^n = \Nfrac^n - N^n %\frac{x^n_{w_0} - x^n_{u_M}}{h}\,,
@@ -307,7 +307,7 @@ Rewriting system \eqref{eq:systemHalfStrings} to include this yields
 where the definitions for the virtual grid points from the second term are defined by the Neumann boundary condition in Eq. \eqref{eq:discreteNeumann} and those from the last terms are found in Eqs. \eqref{eq:connectionInterpol}.
 
 \subsubsection{Adding and removing Grid Points}
-When $c^n$, and consequently $h^n$, is decreased and the inner boundary points surpass the virtual points (i.e. $x_{u_M}^n \leq x_{w_{-1}}^n$ and $x_{w_0}^n \geq x_{u_{M+1}}^n$) and $N^n >  N^{n-1}$, a point is added to the right boundary of $u$ and the left boundary of $w$ (for both time indices $n$ and $n-1$) in an alternating fashion: 
+When $c^n$, and consequently $h^n$, are decreased and the inner boundary points surpass the virtual points (i.e. $x_{u_M}^n \leq x_{w_{-1}}^n$ and $x_{w_0}^n \geq x_{u_{M+1}}^n$) and $N^n >  N^{n-1}$, a point is added to the right boundary of $u$ and the left boundary of $w$ (for both time indices $n$ and $n-1$) in an alternating fashion: 
 \begin{equation}\label{eq:addingPoint}
         \begin{cases}\mathbf{u}^n = [(\mathbf{u}^n)^T, I_3\mathbf{v}^n]^T & \text{if $N^n $ is odd},\\
         \mathbf{w}^n = [I_3^\flip\mathbf{v}^n, (\mathbf{w}^n)^T]^T & \text{if $ N^n$ is even},
@@ -340,10 +340,10 @@ See Figure \ref{fig:addingPoint}.
 \caption{\label{fig:addingPoint}{\it The moment when a point is added to $\mathbf{u}$ at location $x_{u_M} + h$ in Eq. \eqref{eq:addingPoint}. This figure shows an extreme case where this location is far from $x_{w_0}$, i.e., $\alpha' \not\approx 0$ in Eq. \eqref{eq:customIp}.}}
 \end{figure}
 
-\noindent Note, that except in the case of extremely quick parameter variations, $\alpha$ in Eq. \eqref{eq:customIp} is expected to be close to zero%, i.e., $x_{u_M}^n + h \approx x_{w_0}^n$,
+\noindent Note, that except in the case of extremely quick parameter variations, $\alpha$ in Eq. \eqref{eq:customIp} is expected to be close to zero, %, i.e., $x_{u_M}^n + h \approx x_{w_0}^n$,
 meaning that $I_3 \approx [0, 0, 1, 0]$. %This makes sense by looking at Figure \ref{fig:twoFreeStringsGridZoomed}, as exactly when the boundary points $u_M^n$ and $w_0^n$ surpass the virtual points $w_{-1}^n$ and $u_{M+1}^n$, these are going to be close to overlapping.
 
-Removing grid points happens when $c^n$, and consequently $h^n$, is increased and $x_{u_M}^n \geq x_{w_0}^n$ (or $ N^n <  N^{n-1}$). %Compared to adding grid points, removing these is slightly more straightforward as points 
+Removing grid points happens when $c^n$, and consequently $h^n$, are increased and $x_{u_M}^n \geq x_{w_0}^n$ (or $ N^n <  N^{n-1}$). %Compared to adding grid points, removing these is slightly more straightforward as points 
 Grid points are simply removed from $\mathbf{u}$ and $\mathbf{w}$ (again for both $n$ and $n-1$) in an alternating fashion according to
 \begin{equation}\label{eq:removingPoint}
 \begin{cases}
