@@ -1,7 +1,7 @@
 \section{The Dynamic Grid}\label{sec:dynamicGrid}
-The time variation of the wave speed $c$ leads to various complications in the simulation framework presented above. First of all, a change in $c$ causes a change in $\lambda$ according to Eq. \eqref{eq:compactLambda}, affecting the simulation quality and bandwidth. Secondly, and more importantly, a change in $c$ could result in a change in $N$ through Eq. \eqref{eq:numberOfIntervals}. As $N$ directly relates to the number of grid points, this raises questions as to \textit{where} and especially \textit{how} one would add and remove points to the grid according to the now-dynamic wave speed.
+The time variation of the wave speed $c$ leads to various complications in the simulation framework presented above. First of all, a change in $c$ causes a change in $\lambda$ according to Eq. \eqref{eq:compactLambda}, affecting the simulation quality and bandwidth. Secondly, and more importantly, a change in $c$ could result in a change in $N$ through Eq. \eqref{eq:orderOfCalcGrid}. As $N$ directly relates to the number of grid points, this raises questions as to \textit{where} and especially \textit{how} one would add and remove points to the grid according to the now-dynamic wave speed.
 
-We propose a method that allows for a non-integer number of intervals to smoothly change between grid configurations, i.e, the number of grid points. This removes the necessity of the flooring operation in Eq. \eqref{eq:numberOfIntervals} and Eq. \eqref{eq:compactLambda}, and consequently satisfies the CFL condition in \eqref{eq:CFL} with equality at all times. Introducing fractional number of intervals $\Nfrac$, where $N = \lfloor \Nfrac\rfloor$, Eq. \eqref{eq:fundamentalFreqCont} can be rewritten in terms of $\Nfrac$ by substituting Eq. \eqref{eq:numberOfIntervals} into Eq. \eqref{eq:fundamentalFreqCont} (using Eq. \eqref{eq:stabilityCond} satisfied with equality) yielding
+We propose a method that allows for a non-integer number of intervals to smoothly change between grid configurations, i.e, the number of grid points. This removes the necessity of the flooring operation in Eqs. \eqref{eq:orderOfCalcGrid} and \eqref{eq:compactLambda}, and consequently satisfies the CFL condition in \eqref{eq:CFL} with equality at all times. Introducing fractional number of intervals $\Nfrac$, where $N = \lfloor \Nfrac\rfloor$, Eq. \eqref{eq:fundamentalFreqCont} can be rewritten in terms of $\Nfrac$ by substituting the calculation of $N$ in \eqref{eq:orderOfCalcGrid} into Eq. \eqref{eq:fundamentalFreqCont} (using Eq. \eqref{eq:stabilityCond} satisfied with equality) yielding
 \begin{equation}\label{eq:fundamentalFreq}
     f_0 = \frac{1}{2\Nfrac k}\quad \text{with}\quad \Nfrac = L/h.
 \end{equation}
@@ -19,7 +19,7 @@ This shows that if $\lambda = 1$, $\Nfrac$ solely determines the fundamental fre
 Ideally, a method that dynamically changes the grid size of a finite difference scheme should
 \begin{enumerate}
     \item generate an output with a fundamental frequency $f_0$ %described by Eq. \eqref{eq:fundamentalFreq} 
-    which is linearly proportional\SBcomment[Don't get the "linearly proportional to" part here.] \SWcomment[you mean that I can remove `linearly'?] to the wave speed $c$ ($f_0 \propto c$),
+    which is proportional to the wave speed $c$ ($f_0 \propto c$),
     \item allow for a fractional number of intervals $\Nfrac$ to smoothly transition between different grid configurations% so that no auditory artefacts are present in the output sound,
     \item generate an output containing $ N-1$ modes which are integer multiples of the fundamental ($f_p = f_0 p$ with integer $p$),
     % \item generate an output with $\lfloor N\rfloor-1$ modes corresponding to the number of moving points of the system ($p = [1, \hdots, \allowbreak\lfloor N\rfloor-1]$),
@@ -46,7 +46,8 @@ In the following, the location of a grid point (in m from the left boundary) $i$
 Furthermore, different variables that are now time-dependent will receive the $n$ superscript. These are $c^n$, $h^n$, $\Nfrac^n$, $N^n$ and $f_0^n$.
 
 \subsubsection{System Setup}\label{sec:systSetup}
-Consider two grid functions, $u_\lu^n$ and $w_\lw^n$ defined over discrete domains $\lu = [0, \hdots, M^n]$ and $\lw = [0, \hdots, M_w^n]$ respectively with integers $M^n = \lceil 0.5L/c^nk\rceil $ with $\lceil \cdot \rceil$ denoting the ceiling operation and $M_w^n = \lfloor 0.5L/c^nk\rfloor$, i.e., half the number of points allowed by the stability condition, plus one for overlap. The two grid functions are assumed to lie adjacent to each other on the same domain $x$. The grid locations $\lu = M^n$ and $\lw = 0$ are assumed to overlap (and are referred to here as the inner boundaries), so that $x_{u_M}^n = x_{w_0}^n = M^nh$. $u_0^n$ and $w_{M_w}^n$ (referred to here as the outer boundaries) are located at $x_{u_0} = 0$ and $x_{w_{M_w}} = L$. See Figure \ref{fig:twoFreeStrings}. The following boundary conditions are then imposed:
+Consider two grid functions, $u_\lu^n$ and $w_\lw^n$ defined over discrete domains $\lu \in \{0, \hdots, M^n\}$ and $\lw \in \{0, \hdots, M_w^n\}$ respectively with integers $M^n = \lceil 0.5L/c^nk\rceil $ with $\lceil \cdot \rceil$ denoting the ceiling operation and $M_w^n = \lfloor 0.5L/c^nk\rfloor$, i.e., half the number of points allowed by the stability condition, plus one for overlap. The two grid functions are assumed to lie adjacent to each other on the same domain $x$. The grid locations $\lu = M^n$ and $\lw = 0$ are assumed to overlap (and are referred to here as the inner boundaries), so that $x_{u_M}^n = x_{w_0}^n = M^nh^n$. The grid locations $\lu = 0$ and $\lw = M_w$ (referred to here as the outer boundaries) %\MDcomment[Okay, $u$ and $w$ are grid functions, not boiundaries.] 
+are placed at $x_{u_0} = 0$ and $x_{w_{M_w}} = L$. See Figure \ref{fig:twoFreeStrings}. The following boundary conditions are then imposed:
 \begin{subequations}\label{eq:halfStringBoundaryCond}
     \begin{align}
         u_0^n = w_{M_w}^n &= 0,\quad \text{(Dirichlet)}\label{eq:halfStringBoundaryCondDirichlet}\\
@@ -63,9 +64,11 @@ Consider two grid functions, $u_\lu^n$ and $w_\lw^n$ defined over discrete domai
 %
 The systems can then be connected at the inner boundaries using a rigid connection
 \begin{equation}\label{eq:rigid}
-    u_M^n = w_0^n,\quad \forall n.
+    u_M^n = w_0^n \qquad \text{if}\quad x_{u_M}^n = x_{w_0}^n.
 \end{equation}
-To sum up, a grid function with $N$ intervals as per Eq. \eqref{eq:numberOfIntervals} is divided into two separate subsystems connected at their respective inner boundaries. \SBcomment[OK...there is something strange here. You have defined three boundary conditions at the inner boundary (the two Neumann, plus the "connection". I'll have to read further, but something seems overdetermined here! As in, you have more conditions than you can satisfy with the scheme, as it is now. OK, wait, maybe this is solved by the fact that there's a "redundant" grid value at the overlap point...] \SWcomment[The Neumann condition is a starting point to show that connecting two Neumann ends of the 1D waves with a rigid connection actually yields the ``original case''. This starting point can then be used as a basis to build the rest of the method on. Along those lines, the connection is not so much a boundary condition as it is a ``connection force'' acting between the two systems (like connecting the free ends of two bars together)]
+Note that this condition only needs to be satisfied when the inner boundaries perfectly overlap. To sum up, a grid function with $N$ intervals as per Eq. \eqref{eq:orderOfCalcGrid} is divided into two separate subsystems connected at their respective inner boundaries. \SBcomment[OK...there is something strange here. You have defined three boundary conditions at the inner boundary (the two Neumann, plus the "connection". I'll have to read further, but something seems overdetermined here! As in, you have more conditions than you can satisfy with the scheme, as it is now. OK, wait, maybe this is solved by the fact that there's a "redundant" grid value at the overlap point...] \SWcomment[The Neumann condition is a starting point to show that connecting two Neumann ends of the 1D waves with a rigid connection actually yields the ``original case''. This starting point can then be used as a basis to build the rest of the method on. Along those lines, the connection is not so much a boundary condition as it is a ``connection force'' acting between the two systems (like connecting the free ends of two bars together)]
+
+\SWcomment[Ah I see now the confusion (I think), I clarified in the condition that the rigid connection only has to be satisfied when there is a perfect overlap.]
 
 With the above boundary conditions imposed, the following state vectors can be defined:
 \begin{equation}
@@ -108,7 +111,7 @@ Using $u_\lu^n$ and $w_\lw^n$ in the context of the 1D wave equation, a system o
     \end{cases}
 \end{aligned}
 \end{equation}
-\SWcomment[Also $\lu_{\!,i}^n$ here?] applying the effect of the connection %\SWcomment[(``connection force", but not really as it isn't in N)] 
+\SWcomment[Also $n$ superscripts for $\lu_{\!,i}$ and $\lw_{\!,i}$ here?] applying the effect of the connection %\SWcomment[(``connection force", but not really as it isn't in N)] 
 $F^n$ (in m$^2/$s$^2$) to grid points $u_M^n$ and $w_0^n$ respectively.
 %
 Expanding the spatial operators in system \eqref{eq:systemHalfStrings} at inner boundaries $u_M^n$ and $w_0^n$, recalling the Neumann condition in  \eqref{eq:halfStringBoundaryCondNeumann} and the definition for the virtual grid points needed for this condition in Eq. \eqref{eq:neumannSolution} yields
@@ -158,7 +161,7 @@ If the wave speed $c^n$ is then decreased, and consequently the grid spacing $h^
 % \caption{\label{fig:twoFreeStringsGridMove}{When the grid changes ($\Nfrac = 30.5$). The x-axis shows the location (in m) of the respective grid points (fx. $x_{u_l^n}$), but the $x$ is omitted for clarity.}}
 % \end{figure}
 
-As mentioned in Section \ref{sec:systSetup}, the state of the virtual grid points at the inner boundaries are defined as $u_{M+1}^n = w_1^n$ and $w_{-1}^n = u_{M-1}^n$ when the inner boundaries are perfectly overlapping  (i.e., $x^n_{u_M} = x^n_{w_0}$). If this is not the case (i.e., $x^n_{u_M} \neq x^n_{w_0}$) a Lagrangian interpolator $I(x_i^n)$ at location $x_i^n$ from the left boundary (in m) can be used to calculate the value of these virtual grid points (also see Figure \ref{fig:twoFreeStringsGridZoomed} for reference). The interpolator $I$ is a row-vector with the same length as $\mathbfcal{U}^n$ (from Eq. \eqref{eq:fullState}) and its values depend on the interpolation order. In the following the fractional part of $\Nfrac^n$ %distance between the inner boundaries normalised by $h$ 
+As mentioned in Section \ref{sec:systSetup}, the state of the virtual grid points at the inner boundaries are defined as $u_{M+1}^n = w_1^n$ and $w_{-1}^n = u_{M-1}^n$ when the inner boundaries are perfectly overlapping  (i.e., $x^n_{u_M} = x^n_{w_0}$). If this is not the case (i.e., $x^n_{u_M} \neq x^n_{w_0}$) a Lagrangian interpolator $I(x_i^n)$ at location $x_i^n$ from the left boundary (in m) can be used to calculate the value of these virtual grid points (also see Figure \ref{fig:twoFreeStringsGridZoomed} for reference). The interpolator $I$ is a row-vector with the same length as $\mathbfcal{U}^n$ (from Eq. \eqref{eq:fullState}) and its values depend on the interpolation order. Furthermore, the rigid connection in \eqref{eq:rigid} is only valid when the inner boundaries are perfectly overlapping and does not have to be satisfied when $x_{u_M}^n \neq x_{w_0}^n$. In the following the fractional part of $\Nfrac^n$ %distance between the inner boundaries normalised by $h$ 
 is defined as 
 \begin{equation}\label{eq:alphaDef}
     \alpha = \alpha^n = \Nfrac^n - N^n %\frac{x^n_{w_0} - x^n_{u_M}}{h}\,,
@@ -218,13 +221,14 @@ is defined as
 % % \end{figure}
 % %
 % Using $I_1$, analysis of the output shows that the expected fundamental frequency $f_0$ is slightly higher when interpolation needs to happen than the one expected when using Eq. \eqref{eq:fundamentalFreq}. Furthermore, modes higher than $f_\text{s} / 4$ would follow an odd pattern up when decreasing the wave speed, opposite of what is expected. \SWcomment[$\leftarrow$ didn't know where (or whether) to include this.]
-
+%
 % One could extend the range of interpolation by one point to each side, using a cubic Lagrange interpolator instead. Although this would require $w_{-1}^n$ to calculate $u_{M+1}^n$ and vice versa, it is possible to solve this by treating the interpolation equations as a system of linear equations. Analysis of this method, though yielding a correct $f_0$ at all times, shows similar behaviour to the linear interpolation, with odd behaviour regarding modes higher than $f_\text{s}/4$.
-
+%
 % Much better behaviour is observed when points of both $u_l^n$ and $w_l^n$ are used to calculate the values of the virtual grid points. This means to also use $u_M^n$ to calculate $u_{M+1}^n$ and $w_0^n$ for $w_{-1}^n$. Now, the locations of the grid points used in the interpolation are not equidistant and a custom Lagrangian interpolator needs to be created. The lowest order interpolator that can be used here is the quadratic interpolator $I_2$
 %
-The best behaviour is observed when $I$ is even-ordered (odd-ordered interpolation results in higher-frequency modes %crossing and
-increasing as $c^n$ decreases and vice-versa) \SBcomment[Could possibly remove this, as it raises a lot of questions...] \SWcomment[Just what is between the parentheses or more..?]. Although higher orders yield slightly better behaviour this improvement is negligible and the lowest even-ordered, quadratic interpolation, already yields good results. The quadratic interpolator $I_2$ is defined as
+% The best behaviour is observed when $I$ is even-ordered (odd-ordered interpolation results in higher-frequency modes %crossing and
+% increasing as $c^n$ decreases and vice-versa) \SBcomment[Could possibly remove this, as it raises a lot of questions...] \MDcomment[I agree ... if you make a comment like this you'd have to give some proof of it.] \SWcomment[Just what is between the parentheses or more..?]. Although higher orders yield slightly better behaviour this improvement is negligible and the lowest even-ordered, quadratic interpolation, already yields good results. The quadratic interpolator $I_2$ is defined as \MDcomment[I would probably just leave out the whole paragraph and just say: "consider the following quadratic interpolator" ]
+Now, consider the following quadratic interpolator
 \begin{subequations}\label{eq:quadInterp}
 \begin{equation}\label{eq:quadNonFlip}
     I_2(x_i^n) =
@@ -306,7 +310,7 @@ Rewriting system \eqref{eq:systemHalfStrings} to include this yields
 \end{equation}
 where the definitions for the virtual grid points from the second term are defined by the Neumann boundary condition in Eq. \eqref{eq:discreteNeumann} and those from the last terms are found in Eqs. \eqref{eq:connectionInterpol}.
 
-\subsubsection{Adding and removing Grid Points}
+\subsubsection{Adding and removing Grid Points}\label{sec:addRemove}
 When $c^n$, and consequently $h^n$, are decreased and the inner boundary points surpass the virtual points (i.e. $x_{u_M}^n \leq x_{w_{-1}}^n$ and $x_{w_0}^n \geq x_{u_{M+1}}^n$) and $N^n >  N^{n-1}$, a point is added to the right boundary of $u$ and the left boundary of $w$ (for both time indices $n$ and $n-1$) in an alternating fashion: 
 \begin{equation}\label{eq:addingPoint}
         \begin{cases}\mathbf{u}^n = [(\mathbf{u}^n)^T, I_3\mathbf{v}^n]^T & \text{if $N^n $ is odd},\\
@@ -352,7 +356,7 @@ Grid points are simply removed from $\mathbf{u}$ and $\mathbf{w}$ (again for bot
     \end{cases}
 \end{equation}
 
-Until now, only adding and removing points in the center of the system has been considered. This location could be moved anywhere along the grid, the limit being one point from the boundary. In other words, both $u_\lu^n$ and $w_\lw^n$ need to have at least one point (excluding the outer boundaries). Furthermore, one does not have to add and remove points from $\mathbf{u}$ and $\mathbf{w}$ in an alternating fashion as in \eqref{eq:addingPoint}, but can just add and remove from (fx.) $\mathbf{u}$ leaving $\mathbf{w}$ the same size throughout the simulation. In the extreme case where $M^n = N^n - 1$ and $M_w^n = 1$ (leaving $w_\lw^n$ with only one moving grid point, $w_0^n$) the method still works.
+Until now, only adding and removing points in the center of the original system has been considered. This location could be moved anywhere along the grid, the limit being one point from the boundary. In other words, both $u_\lu^n$ and $w_\lw^n$ need to have at least one point (excluding the outer boundaries). Furthermore, one does not have to add and remove points from $\mathbf{u}$ and $\mathbf{w}$ in an alternating fashion as in \eqref{eq:addingPoint}, but can just add and remove from (fx.) $\mathbf{u}$ leaving $\mathbf{w}$ the same size throughout the simulation. In the extreme case where $M^n = N^n - 1$ and $M_w^n = 1$ (leaving $w_\lw^n$ with only one moving grid point, $w_0^n$) the method still works.
 
 \subsubsection{Displacement correction}\label{sec:dispCorr}
 A problem that arises from increasing $h$, is that it is possible that $u_M^n \not\approx w_0^n$ at the time when a grid point needs to be removed. As $x_{u_M}^n \approx x_{w_0}^n$ at the time of removal (except for extremely quick parameter variations), this violates the rigid connection in \eqref{eq:rigid} and causes audible artefacts. A method is proposed that decreases the relative displacement of the inner boundaries the closer their grid-locations are together, i.e., the closer $\alpha$ in \eqref{eq:alphaDef} is to 0. We thus extend system \eqref{eq:FDSwithMethod} regular case as
@@ -362,7 +366,7 @@ A problem that arises from increasing $h$, is that it is possible that $u_M^n \n
     \delta_{tt}w_\lw^n = (c^n)^2\delta_{xx}w_\lw^n - J_w(x_{w_0}^n)\left(2(c^n)^2\delta_{x\cdot}w_0^n+F_\text{c}^n\right)
 \end{cases}
 \end{equation}
-Furthermore, using centred temporal averaging and first-order difference operators
+\MDcomment[looks like Fc needs a minus in the second equation ...] \SWcomment[there is already a minus before $J_w$ that inverts its sign. That should be fine right?] \MDcomment[Cool!]Furthermore, using centred temporal averaging and first-order difference operators
 \begin{subequations}\label{eq:centredOperators}
 \begin{align}\label{eq:centredAverage}
     \mu_{t\cdot}\ugen_l^n &= \frac{1}{2} \left(\ugen_l^{n+1} + \ugen_l^{n-1}\right)\\
@@ -377,11 +381,15 @@ with the difference in displacement between the inner boundaries
 \begin{equation}
     \eta^n \triangleq w_0^n - u_M^n 
 \end{equation}
-(in m), (angular) frequency of the spring $\omega_0$ (in s$^{-1}$) and damping coefficient $\sigma_0$ (in s$^{-1}$). Furthermore, $\beta = \beta(\alpha)$ scales the effect of the displacement correction and is defined as
+(in m), (angular) frequency of the spring $\omega_0$ (in s$^{-1}$) and damping coefficient $\sigma_0$ (in s$^{-1}$). Furthermore, $\beta$ scales the effect of the displacement correction and is defined as
 \begin{equation}\label{eq:betaDef}
-    \beta = \beta^n = \frac{1-\alpha}{\alpha + \varepsilon}\ ,
+    \beta = \beta(\alpha) = \frac{1-\alpha}{\alpha + \varepsilon}\ ,
 \end{equation}
-(in m) \SWcomment[for the units to make sense... I guess it includes the $1/\rho A$ (for a 1D wave modelling a string without stiffness) but as it is an artificial connection force, it might make more sense to exclude all units here..] where $\varepsilon \ll 1$ prevents a division by 0. Despite the operators in \eqref{eq:centredOperators}, introducing states at $n+1$, it is possible to calculate the force explicitly (such as in \cite{bilbao2009} or \cite{bilbao2009Dafx}). Furthermore, it can be shown that this calculation is defined, even for $\alpha  = \varepsilon = 0$ which acts as a rigid connection such as Eq. \eqref{eq:rigid}.
+(in m) \SWcomment[for the units to make sense... I guess it includes the $1/\rho A$ (for a 1D wave modelling a string without stiffness) but as it is an artificial connection force, it might make more sense to exclude all units here..] where $\varepsilon \ll 1$ prevents a division by 0. Despite the operators in \eqref{eq:centredOperators}, introducing states at $n+1$, it is possible to calculate the force explicitly (such as in \cite{bilbao2009} or \cite{bilbao2009Dafx}). Furthermore, it can be shown that this calculation is defined, even for $\alpha  = \varepsilon = 0$ \MDcomment[I don't quite get this. Why do you need to divide by $\alpha$ in (35)?] \SWcomment[To get $\beta \rightarrow \infty$ as $\alpha \rightarrow 0$ :)] \MDcomment[Also how is $\varepsilon$ chosen?] \SWcomment[It is set to 0 in the implementation] \MDcomment[And how is the connection rigid when $\alpha = 0$?  Shouldn't a rigid connection have $\beta \rightarrow \infty$ ] \SWcomment[but it does! As I say, when $\epsilon = 0$ and $\alpha = 0$, $\beta\rightarrow \infty$. $\beta$ is simply a function that goes ("asymptotically") from $0$ to $\infty$ as $\alpha$ goes from $1$ to $0$] which acts as a rigid connection such as Eq. \eqref{eq:rigid}. 
+\MDcomment[I have the feeling that this whole subsection is not very clear ... reviewers might jump on this, because there is no real justification for this extra spring system in here, outside of the fact that you hear artefacts and try to make up for it by adding this in. ] \SWcomment[I tried to justify at the beginning of \ref{sec:dispCorr} that big differences in displacements while $\alpha \gtrsim 0$ violate the rigid connection and that this is a way to smoothly go towards this when increasing $c^n$. But I can see that this might not be enough. What do you propose? :)] \MDcomment[I don't know, it just looks strange that you need to do this. In fact, it's strange that you need two grids! Why not just work with one grid, where you fit the right boundary so to take into account the fractional grid spacing? Having two grids connected at the centre just sounds like a bit of a mess ...] \SWcomment[AHH entire method gone hahaha. No, been there, done that, unfortunately (as far as I know...). You can't do the quadratic interpolation then as you have too few points and you'll get weird behaviour with linear interpolation (as you might remember: modal crossings, opposite moving modal frequencies above $0.25 f_\text{s}$). And even there you'll need to "guide" the displacement of the grid point you're about to remove to the boundary value (which is 0 for Dirichlet) when decreasing $N$ as they will still have some "moment" or "inertia" from the $\delta_{tt}u$ term. In other words, right before removing a grid point, it will still be moving if it had earlier in the simulation, consequently, the Dirichlet boundary term will be violated, similar to how the rigid connection is violated here.\\
+One moving point with the proposed method is as close to adding / removing at the boundary as you'll get (as I describe in Section \ref{sec:addRemove}) and with a large system, this is basically the same as doing it at the boundary ;) I hope this all makes sense..]
+\MDcomment[It's just really strange that you are saying that (17) is valid $\forall$ n, when in fact in Fig 1 the points are far apart ... and here in 4.1.4 you are in fact saying that these points are not going to be equal. What is the point of introducing (17) then if you are going to have them connected with a spring? It seems that (17) is never really implemented ...
+Also, what is the purpose of the loss in the spring?] \SWcomment[You're right about the $\forall n$ in \eqref{eq:rigid}, I changed that and added to the condition that the rigid connection only holds when the inner boundaries perfectly overlap ($\alpha = 0$). The damping is so that you don't get highly oscillatory behaviour when $\alpha \gtrsim 0$. At least, that is what I observed. The damping lets the grid points at the inner boundaries go closer and closer together (more and more satisfying the rigid connection).]
 %$\beta$ can be seen as a spring force pulling the inner boundaries to the average displacement between them. A lower $\varepsilon$ decreases the chance of artifacts but will have a greater filtering effect on the system. For low-speed changes, using $\sim 1000$ samples for removing one grid point, $\varepsilon \approx 30$ ensures that $u_M^n \approx w_0^n$ at the time of removal and already suffices to remove artefacts.
 
 % 
@@ -398,7 +406,7 @@ The proposed method subdivides a grid function $\ugen_l^n$ with $ N+1$ grid poin
     \end{align}
 \end{subequations}
 %
-Due to the Dirichlet boundary condition in \eqref{eq:discreteDirichlet} imposed on the outer boundaries of the system, $u_0^n$ and $w_{M_w}^n$ are $0$ at all times and do not have to be included in the calculation. The ranges of calculation for Eq. \eqref{eq:uUpdate} and \eqref{eq:wUpdate} then become $\lu = [1, \hdots, M^n]$ and $\lw = [0, \hdots, M_w^n - 1]$ respectively. 
+Due to the Dirichlet boundary condition in \eqref{eq:discreteDirichlet} imposed on the outer boundaries of the system, $u_0^n$ and $w_{M_w}^n$ are $0$ at all times and do not have to be included in the calculation. The ranges of calculation for Eq. \eqref{eq:uUpdate} and \eqref{eq:wUpdate} then become $\lu \in \{1, \hdots, M^n\}$ and $\lw \in \{0, \hdots, M_w^n - 1\}$ respectively. 
 
 The inner boundaries are calculated by expanding \eqref{eq:FDSwithMethod} (ignoring the displacement correction for now)
 \begin{subequations}\label{eq:innerboundariesExpanded}
@@ -471,7 +479,7 @@ Algorithm \ref{alg:calcOrder} shows the order of calculation to implement the me
             \begin{minipage}[c]{0.9\linewidth}
                 Retrieve new $c^n$\\
                 Calc. $h^n$ (Eq. \eqref{eq:stabilityCond} with equality)\\
-                Calc. $\Nfrac^n$ and $N^n$ (Eqs. \eqref{eq:fundamentalFreq} and \eqref{eq:numberOfIntervals}) \\
+                Calc. $\Nfrac^n$ and $N^n$ (Eqs. \eqref{eq:fundamentalFreq} and \eqref{eq:orderOfCalcGrid}) \\
                 Calc. $\alpha$ (Eq. \eqref{eq:alphaDef})\\
                 \If{$ N^n \neq N^{n-1} $}
                 {
