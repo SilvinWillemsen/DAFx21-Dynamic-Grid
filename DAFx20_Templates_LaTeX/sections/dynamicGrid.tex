@@ -53,7 +53,7 @@ Consider two grid functions, $u_\lu^n$ and $w_\lw^n$ defined over discrete domai
         \delta_{x\cdot}u_{M^n}^n = \delta_{x\cdot}w_0^n &= 0.\, \quad\text{(Neumann)}, \label{eq:halfStringBoundaryCondNeumann}
     \end{align}
 \end{subequations}
-\SWcomment[Also need to use $M^n$ in the subscript..? If so, I'd like to mention somewhere here that this is suppressed for brevity..]\SBcomment[I think you need to maintain the $n$ everywhere here...otherwise it starts to get very confusing! Like in (16) above. ] In other words, grid points at the outer boundaries are fixed, according to the usual Dirichlet condition, and those at the inner boundaries are free. \SWcomment[***$\rightarrow$]It is important to note that the Neumann condition is just used as a starting point for the method here, but will be modified in Section \ref{sec:changingGrid}. \SWcomment[$\leftarrow$***]\SBcomment[OK, but then why indicate it at all? Can you not just say that the boundary conditions at the inner boundaries will be set shortly? The problem here is that if you impose these conditions, you have something kind of unphysical---string slope is always zero at the string midpoint! And then you need to undo this later...]
+In other words, grid points at the outer boundaries are fixed, according to the usual Dirichlet condition, and those at the inner boundaries are free. \SWcomment[***$\rightarrow$]It is important to note that the Neumann condition is just used as a starting point for the method here, but will be modified in Section \ref{sec:changingGrid}. \SWcomment[$\leftarrow$***]\SBcomment[OK, but then why indicate it at all? Can you not just say that the boundary conditions at the inner boundaries will be set shortly? The problem here is that if you impose these conditions, you have something kind of unphysical---string slope is always zero at the string midpoint! And then you need to undo this later...]
 % \begin{figure}[h]
 % \centerline{\includegraphics[width=\columnwidth]{twoFreeStrings.eps} }
 % \caption{\label{fig:twoFreeStrings}{Two (1D wave) systems connected at one of their boundaries.}}
@@ -260,7 +260,7 @@ and its flipped version
     \end{cases}
 \end{equation}
 \end{subequations}
-with $m_i^n = \lfloor x_i^n/h^n\rfloor$ and $(m_i^\flip)^n = \lfloor x_i^n/ h^n+(1-\alpha) \rfloor$ \SWcomment[$m_i$'s also with superscript $n$ here?], where the shift in the latter is necessary to transform the location $x_i^n$ to the right indices of $\mathbfcal{U}^n$.
+with $m_i^n = \lfloor x_i^n/h^n\rfloor$ and $(m_i^\flip)^n = \lfloor x_i^n/ h^n+(1-\alpha) \rfloor$, where the shift in the latter is necessary to transform the location $x_i^n$ to the correct indices of $\mathbfcal{U}^n$.
 When applied to Eq. \eqref{eq:fullState} this yields the definitions for the virtual grid points
 \begin{subequations}\label{eq:connectionInterpol}
 \begin{align}
@@ -322,7 +322,7 @@ One can show that when $\Nfrac^n$ is an integer, and thus $\alpha = 0$, Eqs. \eq
 \end{equation}
 where the Dirichlet condition in \eqref{eq:halfStringBoundaryCondDirichlet} is (still) used for the outer boundaries and the Neumann condition at the inner boundaries in \eqref{eq:halfStringBoundaryCondNeumann} is replaced by the definitions in \eqref{eq:connectionInterpol}
 \begin{equation}
-        u_{M+1}^n = I_2^\flip(x_{u_{M^n+1}}^n)\mathbfcal{U}^n \quad \text{and}\quad w_{-1}^n = I_2(x_{w_{-1}}^n)\mathbfcal{U}^n.
+        u_{M^n+1}^n = I_2^\flip(x_{u_{M^n+1}}^n)\mathbfcal{U}^n \quad \text{and}\quad w_{-1}^n = I_2(x_{w_{-1}}^n)\mathbfcal{U}^n.
 \end{equation}
 \SWcomment[$\leftarrow$***]
 % Rewriting system \eqref{eq:systemHalfStrings} to include the method yields 
@@ -335,7 +335,7 @@ where the Dirichlet condition in \eqref{eq:halfStringBoundaryCondDirichlet} is (
 % where the definitions for the virtual grid points from the second term are defined by the Neumann boundary condition in Eq. \eqref{eq:discreteNeumann} and those from the last terms are found in Eqs. \eqref{eq:connectionInterpol}. \SWcomment[actually it might be better (and more clear) to say that the Neumann condition at the inner boundaries is removed (such that to calculate $u_M^n$ and $w_0^n$ we need $u_{M+1}^n$ and $w_{-1}^n$) and the then-necessary virtual grid points are defined by Eqs. \eqref{eq:connectionInterpol}. Eventually comes down to the same thing... What do you think?]
 
 \subsubsection{Adding and Removing Grid Points}\label{sec:addRemove}
-When $c^n$, and consequently $h^n$, are decreased and the inner boundary points surpass the virtual points (i.e. $x_{u_M}^n \leq x_{w_{-1}}^n$ and $x_{w_0}^n \geq x_{u_{M+1}}^n$), which means that $N^n >  N^{n-1}$, a point is added to the right boundary of $u$ and the left boundary of $w$ (for both time indices $n$ and $n-1$) in an alternating fashion: 
+When $c^n$, and consequently $h^n$, are decreased and the inner boundary points surpass the virtual points (i.e. $x_{u_{M^n}}^n \leq x_{w_{-1}}^n$ and $x_{w_0}^n \geq x_{u_{M^n+1}}^n$), which means that $N^n >  N^{n-1}$, a point is added to the right boundary of $u$ and the left boundary of $w$ (for both time indices $n$ and $n-1$) in an alternating fashion: 
 \begin{equation}\label{eq:addingPoint}
         \begin{cases}\mathbf{u}^n = [(\mathbf{u}^n)^T, I_3\mathbf{v}^n]^T & \text{if $N^n $ is odd},\\
         \mathbf{w}^n = [I_3^\flip\mathbf{v}^n, (\mathbf{w}^n)^T]^T & \text{if $ N^n$ is even},
@@ -343,7 +343,7 @@ When $c^n$, and consequently $h^n$, are decreased and the inner boundary points 
 \end{equation}
 where 
 \begin{align*}
-\mathbf{v}^n = [u_{M-1}^n, u_M^n, w_0^n, w_1^n]^T,% \quad\text{and}\\
+\mathbf{v}^n = [u_{M^n-1}^n, u_{M^n}^n, w_0^n, w_1^n]^T,% \quad\text{and}\\
 %     \mathbf{v}_\star^n &= [w_1^n, w_0^n, u_M^n, u_{M-1}^n],
 \end{align*}
 and cubic Lagrangian interpolator
@@ -372,7 +372,7 @@ Notice that $\Nfrac^n$ is only going to be slightly bigger than an integer at th
 % ,  $\alpha$ in Eq. \eqref{eq:customIp} is expected to be close to zero, %, i.e., $x_{u_M}^n + h \approx x_{w_0}^n$,
 This means that that $I_3 \approx [0, 0, 1, 0]$ and the displacement of the newly added point is nearly fully based on the grid point at the inner boundary of the other system. %This makes sense by looking at Figure \ref{fig:twoFreeStringsGridZoomed}, as exactly when the boundary points $u_M^n$ and $w_0^n$ surpass the virtual points $w_{-1}^n$ and $u_{M+1}^n$, these are going to be close to overlapping.
 
-Removing grid points happens when $c^n$, and consequently $h^n$, are increased and $x_{u_M}^n \geq x_{w_0}^n$ (or $ N^n <  N^{n-1}$). %Compared to adding grid points, removing these is slightly more straightforward as points 
+Removing grid points happens when $c^n$, and consequently $h^n$, are increased and $x_{u_{M^n}}^n \geq x_{w_0}^n$ (or $ N^n <  N^{n-1}$). %Compared to adding grid points, removing these is slightly more straightforward as points 
 Grid points are simply removed from $\mathbf{u}$ and $\mathbf{w}$ (again for both $n$ and $n-1$) in an alternating fashion according to
 \begin{equation}\label{eq:removingPoint}
 \begin{cases}
@@ -385,10 +385,10 @@ In Eqs. \eqref{eq:addingPoint} and \eqref{eq:removingPoint}, the even and odd co
 Until now, only adding and removing points in the center of the original system has been considered. This location could be moved anywhere along the grid, the limit being one point from the boundary. In other words, both $u_\lu^n$ and $w_\lw^n$ need to have at least one point (excluding the grid functions at the outer boundaries). Furthermore, one does not have to add and remove points from $\mathbf{u}$ and $\mathbf{w}$ in an alternating fashion as in \eqref{eq:addingPoint}, but can just add and remove from (fx.) $\mathbf{u}$ leaving $\mathbf{w}$ the same size throughout the simulation. In the extreme case where $M^n = N^n - 1$ and $M_w^n = 1$ (leaving $w_\lw^n$ with only one moving grid point, $w_0^n$) the method still works.
 
 \subsubsection{Displacement correction}\label{sec:dispCorr}
-A problem that arises when increasing $c^n$, is that it is possible that the displacements $u_M^n \not\approx w_0^n$ at the time when a grid point needs to be removed. As the grid locations $x_{u_M}^n \approx x_{w_0}^n$ at the time of removal (except for extremely quick parameter variations), this violates the rigid connection in \eqref{eq:rigid} and causes audible artefacts. A method is proposed that decreases the relative displacement of the inner boundaries the closer their grid-locations are together, i.e., the closer $\alpha$ in \eqref{eq:alphaDef} is to 0. We thus extend system \eqref{eq:FDSwithMethod} with an artificial spring force as
+A problem that arises when increasing $c^n$, is that it is possible that the displacements $u_{M^n}^n \not\approx w_0^n$ at the time when a grid point needs to be removed. As the grid locations $x_{u_{M^n}}^n \approx x_{w_0}^n$ at the time of removal (except for extremely quick parameter variations), this violates the rigid connection in \eqref{eq:rigid} and causes audible artefacts. A method is proposed that decreases the relative displacement of the inner boundaries the closer their grid-locations are together, i.e., the closer $\alpha$ in \eqref{eq:alphaDef} is to 0. We thus extend system \eqref{eq:FDSwithMethod} with an artificial spring force as
 \begin{equation}\label{eq:sysDispCorr}
 \begin{cases}
-    \delta_{tt}u_\lu^n = (c^n)^2\delta_{xx}u_\lu^n+ J_u(x_{u_M}^n)%\left(2(c^n)^2\delta_{x\cdot}u_M^n + F_\text{c}^n\right)
+    \delta_{tt}u_\lu^n = (c^n)^2\delta_{xx}u_\lu^n+ J_u(x_{u_{M^n}}^n)%\left(2(c^n)^2\delta_{x\cdot}u_M^n + F_\text{c}^n\right)
     F_\text{c}^n,\\
     \delta_{tt}w_\lw^n = (c^n)^2\delta_{xx}w_\lw^n - J_w(x_{w_0}^n)%\left(2(c^n)^2\delta_{x\cdot}w_0^n+F_\text{c}^n\right)
     F_\text{c}^n.
@@ -409,7 +409,7 @@ is defined as %\SWcomment[something off with the units here. I think I took this
 %\MDcomment[It seems that $\omega_0$ is somewhat redundant here.] \SWcomment[Actually, I did that for the units to add up (didn't have it before, as it is only the ratio between $\omega_0^2$ and $\sigma_0$ that matters..). As I plan to take away the units (since it's an arbitrary connection) should I remove it you think?] \MDcomment[Also, why multiply $\sigma_0$ by $\beta$? ... not very clear.] \SWcomment[$\beta$ simply scales the entire correction effect. Apart from force, I don't want there to be much damping effect when $\alpha$ is not close to 0 either.] 
 with the difference in displacement between the inner boundaries
 \begin{equation}\label{eq:etaDispCorr}
-    \eta^n \triangleq w_0^n - u_M^n,
+    \eta^n \triangleq w_0^n - u_{M^n}^n,
 \end{equation}
 and damping coefficient $\sigma_0$% (in s$^{-1}$)
 . Furthermore, $\beta$ scales the effect of the displacement correction and is defined as
@@ -422,7 +422,7 @@ where $\varepsilon \ll 1$ prevents a division by 0. Despite the operators in \eq
 which acts as a rigid connection such as Eq. \eqref{eq:rigid}. Essentially, the displacement correction attempts to have $\eta^n\rightarrow 0$ in Eq. \eqref{eq:etaDispCorr} as $\alpha \rightarrow 0$ to satisfy the rigid connection in Eq. \eqref{eq:rigid}.
 Although the correction presented here is not based on some physical process, it could be justified by the fact that large differences in displacement between two spatially adjacent points is not physical. \SWcomment[$\leftarrow$ tried to justify]
 
-Notice that when $c^n$ is decreased, the rigid connection will not be violated as $u_M^n \approx w_0^n$ when a point is added. This is due to the fact that $I_3\approx [0, 0, 1, 0]$ and either $u_M^n$ or $w_0^n$ is the newly added point which almost solely based on the other (for low-speed parameter variations).
+Notice that when $c^n$ is decreased, the rigid connection will not be violated as $u_{M^n}^n \approx w_0^n$ when a point is added. This is due to the fact that $I_3\approx [0, 0, 1, 0]$ and either $u_{M^n}^n$ or $w_0^n$ is the newly added point which almost solely based on the other (for low-speed parameter variations).
 % \MDcomment[I have the feeling that this whole subsection is not very clear ... reviewers might jump on this, because there is no real justification for this extra spring system in here, outside of the fact that you hear artefacts and try to make up for it by adding this in. ] \SWcomment[I tried to justify at the beginning of \ref{sec:dispCorr} that differences in displacements while $\alpha \gtrsim 0$ violate the rigid connection and that this is a way to smoothly go towards this when increasing $c^n$. But I can see that this might not be enough. What do you propose? :)] \MDcomment[I don't know, it just looks strange that you need to do this. In fact, it's strange that you need two grids! Why not just work with one grid, where you fit the right boundary so to take into account the fractional grid spacing? Having two grids connected at the centre just sounds like a bit of a mess ...] \SWcomment[AHH entire method gone hahaha. No, been there, done that, unfortunately (as far as I know...). You can't do the quadratic interpolation then as you have too few points and you'll get weird behaviour with linear interpolation (as you might remember: modal crossings, opposite moving modal frequencies above $0.25 f_\text{s}$). And even there you'll need to "guide" the displacement of the grid point you're about to remove to the boundary value (which is 0 for Dirichlet) when decreasing $N$ as they will still have some "moment" or "inertia" from the $\delta_{tt}u$ term. In other words, right before removing a grid point, it will still be moving if it had earlier in the simulation, consequently, the Dirichlet boundary term will be violated, similar to how the rigid connection is violated here.\\
 % One moving point with the proposed method is as close to adding / removing at the boundary as you'll get (as I describe in Section \ref{sec:addRemove}) and with a large system, this is basically the same as doing it at the boundary ;) I hope this all makes sense..]
 % \MDcomment[It's just really strange that you are saying that (17) is valid $\forall$ n, when in fact in Fig 1 the points are far apart ... and here in 4.1.4 you are in fact saying that these points are not going to be equal. What is the point of introducing (17) then if you are going to have them connected with a spring? It seems that (17) is never really implemented ...
@@ -449,12 +449,12 @@ Due to the Dirichlet boundary condition in \eqref{eq:halfStringBoundaryCondDiric
 The grid points at the inner boundaries are calculated by expanding \eqref{eq:FDSwithMethod} (ignoring the displacement correction for now)
 \begin{subequations}\label{eq:innerboundariesExpanded}
     \begin{align}
-        u_M^{n+1} &= u_{M+1}^n + u_{M-1}^n - u_M^{n-1},\\
+        u_{M^n}^{n+1} &= u_{{M^n}+1}^n + u_{{M^n}-1}^n - u_{M^n}^{n-1},\\
         w_0^{n+1} &= w_{-1}^n + w_{1}^n - w_0^{n-1}.
     \end{align}
 \end{subequations}
 %
-where virtual grid points $u_{M+1}^n$ and $w_{-1}^n$ can be calculated using Eq. \eqref{eq:connectionInterpol}.
+where virtual grid points $u_{{M^n}+1}^n$ and $w_{-1}^n$ can be calculated using Eq. \eqref{eq:connectionInterpol}.
 
 Then, when $ N^n > N^{n-1}$ a point is added to $\mathbf{u}^n$ and $\mathbf{u}^{n-1}$ (or $\mathbf{w}^n$ and $\mathbf{w}^{n-1}$) using Eq. \eqref{eq:addingPoint}, and when $ N^n  < N^{n-1}$ a point is removed from the same vectors using Eq. \eqref{eq:removingPoint}. In order to prevent audible artefacts when increasing $c^n$ (and thus decreasing $\Nfrac^n$) due to a violation of the rigid connection in \eqref{eq:rigid}, a method in \eqref{eq:sysDispCorr} is proposed to ensure that the grid points at the inner boundaries have a similar displacement when one of them is removed. 
 
