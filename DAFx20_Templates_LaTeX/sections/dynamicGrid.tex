@@ -46,7 +46,7 @@ In the following, the location of a grid point (in m from the left boundary) $q_
 Furthermore, some variables are now time dependent as indicated by superscript $n$. These are $c^n$, $h^n$, $\Nfrac^n$, $N^n$ and $f_0^n$.
 
 \subsubsection{System Setup}\label{sec:systSetup}
-Consider two grid functions, $u_\lu^n$ and $w_\lw^n$ defined over discrete domains $\lu \in \{0, \hdots, M^n\}$ and $\lw \in \{0, \hdots, M_w^n\}$ respectively with integers $M^n = \lceil 0.5N^n\rceil $ with $\lceil \cdot \rceil$ denoting the ceiling operation and $M_w^n = \lfloor 0.5N^n\rfloor$, i.e., half the number of points allowed by the stability condition, plus one for overlap. The two grid functions are assumed to lie adjacent to each other on the same domain $x$. For now, the grid locations $\lu = M^n$ \SBcomment[Actually $l_{u}^{n}$, right?] \SWcomment[hmm.. no I don't think so, as $l_u^n$ is only an element of a set (that changes size) also see the email I sent you.] and $\lw = 0$ are assumed to overlap so that $x_{u_{M^n}}^n = x_{w_0}^n = M^nh^n$, and are referred to as the inner boundaries. The grid locations $\lu = 0$ and $\lw = M_w^n$ are placed at $x_{u_0}^n = 0$ and $x_{w_{M_w^n}}^n = L$ and will be referred to as the outer boundaries. See Figure \ref{fig:twoFreeStrings}. The following boundary conditions are then imposed:
+Consider two grid functions, $u_\lu^n$ and $w_\lw^n$ defined over discrete domains $\lu \in \{0, \hdots, M^n\}$ and $\lw \in \{0, \hdots, M_w^n\}$ respectively with integers $M^n = \lceil 0.5N^n\rceil $ with $\lceil \cdot \rceil$ denoting the ceiling operation and $M_w^n = \lfloor 0.5N^n\rfloor$, i.e., half the number of points allowed by the stability condition, plus one for overlap. The two grid functions are assumed to lie adjacent to each other on the same domain $x$. For now, the grid locations $\lu = M^n$ \SBcomment[Actually $l_{u}^{n}$, right?] \SWcomment[hmm.. no I don't think so, as $l_u^n$ is only an element of a set (that changes size). (Also see the email I sent you.) I elaborated right below Eq. (22) that the $n$ in $M^n$ is unaffected by $\delta_{tt}$] and $\lw = 0$ are assumed to overlap so that $x_{u_{M^n}}^n = x_{w_0}^n = M^nh^n$, and are referred to as the inner boundaries. The grid locations $\lu = 0$ and $\lw = M_w^n$ are placed at $x_{u_0}^n = 0$ and $x_{w_{M_w^n}}^n = L$ and will be referred to as the outer boundaries. See Figure \ref{fig:twoFreeStrings}. The following boundary conditions are then imposed:
 \begin{subequations}\label{eq:halfStringBoundaryCond}
     \begin{align}
         u_0^n = w_{M_w^n}^n &= 0,\quad \text{(Dirichlet)}\label{eq:halfStringBoundaryCondDirichlet}\\
@@ -136,7 +136,7 @@ It is important to note that the time index $n$ in $M^n$ will not be affected by
 \end{align*}
 Substituting this into system \eqref{eq:expandedSystem} after expansion of the second-time derivative yields the update of the inner boundaries
 % \begin{equation}
-\begin{subnumcases}{\!\!\!\!\!\!\!\!\!\!\!\!\!\!\label{eq:resultOneConnectedPoint}}
+\begin{subnumcases}{\!\!\!\!\!\!\!\!\label{eq:resultOneConnectedPoint}}
     u^{n+1}_{M^n} = 2u_{M^n}^n - u_{M^n}^{n-1} + \lambda^2(u_{M^n-1}^n-2u_{M^n}^n+w_1^n)\label{eq:resultUM}\\
     w^{n+1}_0 = 2w_0^n - w_0^{n-1} + \lambda^2(u_{M^n-1}^n-2w_0^n+w_1^n)\label{eq:resultw0}
 \end{subnumcases}
@@ -161,7 +161,7 @@ We now continue by varying $c^n$ such that this is not the case.
 
 The locations of the outer boundaries $x_{u_0}^n$ and $x_{w_{M_w}}^n$ are fixed:
 \begin{equation*}
-    x_{u_0}^n = x_{u_0}^0 = 0 \quad \text{and}\quad x_{w_{M_w}}^n = x_{w_{M_w}}^0 = L \quad \forall n.
+    x_{u_0}^n = x_{u_0}^0 = 0 \quad \text{and}\quad x_{w_{M_w^n}}^n = x_{w_{M_w^n}}^0 = L \quad \forall n.
 \end{equation*}
 If the wave speed $c^n$ is then decreased, and consequently the grid spacing $h^n$ according to Eq. \eqref{eq:stabilityCond} (with equality), all other points move towards their respective outer boundary (see Figure \ref{fig:twoFreeStringsGridMove}). Calculating $h^n$ this way allows this method to always satisfy the CFL condition in Eq. \eqref{eq:CFL} with equality, solving issues regarding simulation quality and numerical dispersion described in Section \ref{sec:quality}. %, as is the case with the previous iteration described in \ref{sec:iterations}.
 
@@ -170,7 +170,7 @@ If the wave speed $c^n$ is then decreased, and consequently the grid spacing $h^
 % \caption{\label{fig:twoFreeStringsGridMove}{When the grid changes ($\Nfrac = 30.5$). The x-axis shows the location (in m) of the respective grid points (fx. $x_{u_l^n}$), but the $x$ is omitted for clarity.}}
 % \end{figure}
 
-As mentioned in Section \ref{sec:systSetup}, the state of the virtual grid points at the inner boundaries are defined as $u_{M+1}^n = w_1^n$ and $w_{-1}^n = u_{M-1}^n$ when the inner boundaries perfectly overlap  (i.e., $x^n_{u_M} = x^n_{w_0}$). If this is not the case ($x^n_{u_M} \neq x^n_{w_0}$) a Lagrangian interpolator $I(x_i^n)$ at location $x_i^n$ (in m from the left boundary) can be used to calculate the value of these virtual grid points (also see Figure \ref{fig:twoFreeStringsGridZoomed} for reference). The interpolator $I$ is a row-vector with the same length as $\mathbfcal{U}^n$ (from Eq. \eqref{eq:fullState}) and its values depend on the interpolation order. %Furthermore, the rigid connection in \eqref{eq:rigid} is only valid when the inner boundaries perfectly overlap and does not have to be satisfied when $x_{u_M}^n \neq x_{w_0}^n$. 
+As mentioned in Section \ref{sec:systSetup}, the state of the virtual grid points at the inner boundaries are defined as $u_{M^n+1}^n = w_1^n$ and $w_{-1}^n = u_{M^n-1}^n$ when the inner boundaries perfectly overlap  (i.e., $x^n_{u_M} = x^n_{w_0}$). If this is not the case ($x^n_{u_M^n} \neq x^n_{w_0}$) a Lagrangian interpolator $I(x_i^n)$ at location $x_i^n$ (in m from the left boundary) can be used to calculate the value of these virtual grid points (also see Figure \ref{fig:twoFreeStringsGridZoomed} for reference). The interpolator $I$ is a row-vector with the same length as $\mathbfcal{U}^n$ (from Eq. \eqref{eq:fullState}) and its values depend on the interpolation order. %Furthermore, the rigid connection in \eqref{eq:rigid} is only valid when the inner boundaries perfectly overlap and does not have to be satisfied when $x_{u_M}^n \neq x_{w_0}^n$. 
 In the following, the fractional part of $\Nfrac^n$ %distance between the inner boundaries normalised by $h$ 
 is defined as 
 \begin{equation}\label{eq:alphaDef}
@@ -243,9 +243,9 @@ Now, consider the following quadratic interpolator
 \begin{equation}\label{eq:quadNonFlip}
     I_2(x_i^n) =
     \begin{cases}
-        -(\alpha-1)/(\alpha + 1), & m = m_i-1\\
-        1, & m = m_i\\
-        (\alpha-1)/(\alpha + 1), & m = m_i+1\\
+        -(\alpha-1)/(\alpha + 1), & m = m_i^n-1\\
+        1, & m = m_i^n\\
+        (\alpha-1)/(\alpha + 1), & m = m_i^n+1\\
         0, & \text{otherwise}
     \end{cases}
 \end{equation}
@@ -253,21 +253,21 @@ and its flipped version
 \begin{equation}\label{eq:quadFlip}
     I_2^\flip(x_i^n) = 
     \begin{cases}
-        (\alpha-1)/(\alpha + 1), & m = m_i^\flip-1\\
-        1, & m = m_i^\flip\\
-        -(\alpha-1)/(\alpha + 1), & m = m_i^\flip+1\\
+        (\alpha-1)/(\alpha + 1), & m = (m_i^\flip)^n-1\\
+        1, & m = (m_i^\flip)^n\\
+        -(\alpha-1)/(\alpha + 1), & m = (m_i^\flip)^n+1\\
         0, & \text{otherwise}
     \end{cases}
 \end{equation}
 \end{subequations}
-with $m_i = \lfloor x_i^n/h^n\rfloor$ and $m_i^\flip = \lfloor x_i^n/ h^n+(1-\alpha) \rfloor$ \SWcomment[$m_i$'s also with superscript $n$ here?], where the shift in the latter is necessary to transform the location $x_i^n$ to the right indices of $\mathbfcal{U}^n$.
+with $m_i^n = \lfloor x_i^n/h^n\rfloor$ and $(m_i^\flip)^n = \lfloor x_i^n/ h^n+(1-\alpha) \rfloor$ \SWcomment[$m_i$'s also with superscript $n$ here?], where the shift in the latter is necessary to transform the location $x_i^n$ to the right indices of $\mathbfcal{U}^n$.
 When applied to Eq. \eqref{eq:fullState} this yields the definitions for the virtual grid points
 \begin{subequations}\label{eq:connectionInterpol}
 \begin{align}
-        &u_{M+1}^n = I_2^\flip(x^n_{u_{M+1}})\mathbfcal{U}^n = \frac{\alpha - 1}{\alpha + 1}u_{M}^n + w_0^n - \frac{\alpha - 1}{\alpha + 1}w_1^n,
+        &u_{M^n+1}^n = I_2^\flip(x^n_{u_{M^n+1}})\mathbfcal{U}^n = \frac{\alpha - 1}{\alpha + 1}u_{M^n}^n + w_0^n - \frac{\alpha - 1}{\alpha + 1}w_1^n,
     \label{eq:calcUMP1}\\
         &w_{-1}^n = I_2(x^n_{w_{-1}})\mathbfcal{U}^n
-        =-\frac{\alpha - 1}{\alpha + 1}u_{M-1}^n + u_{M}^n+ \frac{\alpha - 1}{\alpha + 1}w_{0}^n.\label{eq:calcWM1}
+        =-\frac{\alpha - 1}{\alpha + 1}u_{M^n-1}^n + u_{M^n}^n+ \frac{\alpha - 1}{\alpha + 1}w_{0}^n.\label{eq:calcWM1}
 \end{align}
 \end{subequations}
 % where
@@ -311,7 +311,7 @@ When applied to Eq. \eqref{eq:fullState} this yields the definitions for the vir
 %     \end{bmatrix}.
 % \end{equation}
 \SWcomment[***$\rightarrow$] These definitions for the virtual grid points at the inner boundaries will replace the Neumann condition in Eq. \eqref{eq:halfStringBoundaryCondNeumann}.\SWcomment[$\leftarrow$***] %As will be shown in Section \ref{sec:results}, quadratic interpolation yields the expected fundamental frequency at all times. 
-One can show that when $\Nfrac^n$ is an integer, and thus $\alpha = 0$, Eqs. \eqref{eq:calcUMP1} and \eqref{eq:calcWM1} can be substituted as $w_1^n$ and $u_{M-1}^n$ into Eqs. \eqref{eq:resultUM} and \eqref{eq:resultw0} respectively (as these acted as virtual grid points $u_{M+1}^n$ and $w_{-1}^n$). Then recalling Eq. \eqref{eq:rigid} it can be seen that the system reduces to \eqref{eq:resultOneConnectedPoint} and exhibits the same exact behaviour as the normal case. % also when interpolation needs to happen.
+One can show that when $\Nfrac^n$ is an integer, and thus $\alpha = 0$, Eqs. \eqref{eq:calcUMP1} and \eqref{eq:calcWM1} can be substituted as $w_1^n$ and $u_{M^n-1}^n$ into Eqs. \eqref{eq:resultUM} and \eqref{eq:resultw0} respectively (as these acted as virtual grid points $u_{M^n+1}^n$ and $w_{-1}^n$). Then recalling Eq. \eqref{eq:rigid} it can be seen that the system reduces to \eqref{eq:resultOneConnectedPoint} and exhibits the same exact behaviour as the normal case. % also when interpolation needs to happen.
 
 \SWcomment[***$\rightarrow$]Now that the virtual grid points at the inner boundaries are not determined by the Neumann boundary condition in \eqref{eq:halfStringBoundaryCondNeumann}, but rather by the definitions in Eqs. \eqref{eq:connectionInterpol}, system \eqref{eq:systemHalfStrings} can simply be re-written to
 \begin{equation}\label{eq:FDSwithMethod}
@@ -322,7 +322,7 @@ One can show that when $\Nfrac^n$ is an integer, and thus $\alpha = 0$, Eqs. \eq
 \end{equation}
 where the Dirichlet condition in \eqref{eq:halfStringBoundaryCondDirichlet} is (still) used for the outer boundaries and the Neumann condition at the inner boundaries in \eqref{eq:halfStringBoundaryCondNeumann} is replaced by the definitions in \eqref{eq:connectionInterpol}
 \begin{equation}
-        u_{M+1}^n = I_2^\flip(x_{u_{M+1}}^n)\mathbfcal{U}^n \quad \text{and}\quad w_{-1}^n = I_2(x_{w_{-1}}^n)\mathbfcal{U}^n.
+        u_{M+1}^n = I_2^\flip(x_{u_{M^n+1}}^n)\mathbfcal{U}^n \quad \text{and}\quad w_{-1}^n = I_2(x_{w_{-1}}^n)\mathbfcal{U}^n.
 \end{equation}
 \SWcomment[$\leftarrow$***]
 % Rewriting system \eqref{eq:systemHalfStrings} to include the method yields 
