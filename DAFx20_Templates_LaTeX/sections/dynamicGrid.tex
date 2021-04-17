@@ -151,7 +151,7 @@ which, (again, recalling Eq. \eqref{eq:rigid}) are indeed equivalent expressions
     \vspace{-1em}\subfloat[]{\label{fig:twoFreeStringsGridMove}{ \includegraphics[width=\figwidth\columnwidth]{Figures/twoFreeStringsGridMoveNarrow.eps}}}\\
     \vspace{-1em}\subfloat[]{\label{fig:twoFreeStringsGridZoomed}{ \includegraphics[width=\figwidth\columnwidth]{Figures/twoFreeStringGridMoveZoomedNarrow.eps}}}
     \vspace{-1em}\caption{\it Illustration of the proposed method. In all figures, the x-axis shows the location of the respective grid points%(fx. $x_{u_l^n}$)
-    , but `$x^n$' is omitted for brevity. (a) Locations of the states of two (1D wave) systems connected at the inner boundaries ($\Nfrac^n = 30$, $x_{u_{M^n}}^n = x_{w_0}^n$). (b) When $c^n$ -- and consequently $h^n$ -- are decreased and the positions of the grid points change ($\Nfrac^n = 30.5$, $x_{u_{M^n}}^n \neq x_{w_0}^n$). (c) Figure \ref{fig:twoFreeStringsGridMove} zoomed-in around the inner boundaries. The virtual grid points $u_{M+1}^n$ and $w_{-1}^n$ are shown together with the distance between them expressed using $\alpha$ in Eq. \eqref{eq:alphaDef}.}
+    , but `$x^n$' is omitted for brevity. (a) Locations of the states of two (1D wave) systems connected at the inner boundaries ($\Nfrac^n = 30$, $x_{u_{M^n}}^n = x_{w_0}^n$). (b) When $c^n$ -- and consequently $h^n$ -- are decreased and the positions of the grid points change ($\Nfrac^n = 30.5$, $x_{u_{M^n}}^n \neq x_{w_0}^n$). (c) Figure \ref{fig:twoFreeStringsGridMove} zoomed-in around the inner boundaries. The virtual grid points $u_{M^n+1}^n$ and $w_{-1}^n$ are shown together with the distance between them expressed using $\alpha$ in Eq. \eqref{eq:alphaDef}.}
 \end{figure}
 \SBcomment[OK, in the last panel of Figure 1, the distance between $u_{M}$ and $w_{0}$ looks like a full grid point...but is labelled as $\alpha = 1/2$, which I thought would be a half-grid point distance.] \SWcomment[It is! A gridpoint distance ($h$) is between two blue points or between two red points. This makes the distance between a blue and a red point $0.5h$ or $\alpha = 0.5$. I could make it 0.4 or 0.6 to avoid this confusion..]
 
@@ -364,8 +364,8 @@ See Figure \ref{fig:addingPoint}.
     \centering
 %% \reprintcolumnwidth is the same in preprint and reprint for
 %% ease of use for authors:
-\includegraphics[width=\figwidth\columnwidth]{Figures/addingGridPoint4.eps}
-\caption{\label{fig:addingPoint}{\it The moment when a point is added to $\mathbf{u}$ at location $x_{u_M} + h$ in Eq. \eqref{eq:addingPoint}. This figure shows an extreme case where this location is far from $x_{w_0}$, i.e., $\alpha \not\approx 0$ in Eq. \eqref{eq:customIp}.}}
+\includegraphics[width=\figwidth\columnwidth]{Figures/addingGridPointNarrow.eps}
+\caption{\label{fig:addingPoint}{\it The moment when a point is added to $\mathbf{u}$ at location $x_{u_{M^n}} + h$ in Eq. \eqref{eq:addingPoint}. This figure shows an extreme case where this location is far from $x_{w_0}$, i.e., $\alpha \not\approx 0$ in Eq. \eqref{eq:customIp}.}}
 \end{figure}
 Notice that $\Nfrac^n$ is only going to be slightly bigger than an integer at the moment that a point is added (except in the case of extremely quick parameter variations) and Eq. \eqref{eq:alphaDef} will return $\alpha \gtrsim 0$.
 %\MDcomment[Okay, I don't quite get this ... why cannot $\alpha$ be close to 1 here? In fact, it will be close to 1 when a point is about to be created ... I don't understand how the rate of change of $c$ affects the value of $\alpha$] \SWcomment[Right when a point is supposed to be added, $N^n$ is going to be slightly bigger than an integer value. Just to clarify, $N^n$ is first retrieved and then used to calculate $\alpha$ in \eqref{eq:alphaDef}. In quick parameter variations $N^{n-1}$ might be fx. 0.99, and $N^{n}$ fx. 0.3. Then $\alpha \not\gtrsim 0$. The way that the rate of change of $c$ is linked to $\alpha$ is that there is only $1/f_\text{s}$ seconds difference between $n$ and $n-1$.]
@@ -376,8 +376,8 @@ Removing grid points happens when $c^n$, and consequently $h^n$, are increased a
 Grid points are simply removed from $\mathbf{u}$ and $\mathbf{w}$ (again for both $n$ and $n-1$) in an alternating fashion according to
 \begin{equation}\label{eq:removingPoint}
 \begin{cases}
-    \mathbf{u}^n = [u_0^n, u_1^n ..., u_{M-1}^n]^T & \text{if $N^n$ is even}, \\
-     \mathbf{w}^n = [w_1^n, w_2^n ..., w_{M_w}^n]^T & \text{if $N^n$ is odd}.
+    \mathbf{u}^n = [u_0^n, u_1^n ..., u_{M^n-1}^n]^T & \text{if $N^n$ is even}, \\
+     \mathbf{w}^n = [w_1^n, w_2^n ..., w_{M_w^n}^n]^T & \text{if $N^n$ is odd}.
     \end{cases}
 \end{equation}
 In Eqs. \eqref{eq:addingPoint} and \eqref{eq:removingPoint}, the even and odd conditions can be inverted. To keep the difference between $u$ and $w$ a maximum of one grid point, the ceiling and flooring operations when calculating $M^n$ and $M_w^n$ will need to be inverted as well.
