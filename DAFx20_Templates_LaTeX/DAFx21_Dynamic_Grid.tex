@@ -89,6 +89,7 @@
 \def\lw{{l_w}}
 \def\ugen{q} % general state variable to be used in the regular case (sections 2 and 3) 
 
+\usepackage{enumitem}
 \usepackage{cases}
 % \usepackage{subfig}
 \usepackage{algorithm2e, setspace}
@@ -253,7 +254,7 @@
 %in the authors' line. However, if your paper does not require any \sthanks command, please use an empty (vertical space eating) \thanks command only in one of the authors
 %headers as follows:
 \threeaffiliations{
-\paperauthorA \,}{{Multisensory Experience Lab} \\ Aalborg University Copenhagen\\ Copenhagen, Denmark\\
+\hspace{1.5mm}\paperauthorA\thanks{\vspace{-3mm}} }{{Multisensory Experience Lab} \\ Aalborg University Copenhagen\\ Copenhagen, Denmark\\
 {\tt \href{mailto:sil@create.aau.dk}{sil@create.aau.dk}}
 }
 {\paperauthorB, \paperauthorC\,}
@@ -332,8 +333,10 @@ NordicSMC, project number 86892.
 
 %\newpage
 \nocite{*}
-{\small
+
 \bibliographystyle{IEEEbib}
+\section{References}
+{\fontsize{8pt}{10pt}\selectfont
 \bibliography{DAFx20_tmpl} % requires file DAFx20_tmpl.bib
 }
 
