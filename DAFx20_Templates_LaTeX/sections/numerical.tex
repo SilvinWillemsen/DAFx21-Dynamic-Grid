@@ -21,7 +21,7 @@ The following operators can then be applied to $\ugen_l^n$ to get the following 
          \delta_{xx}\ugen_l^n &= \frac{1}{h^2}\left(\ugen_{l+1}^n-2\ugen_l^n + \ugen_{l-1}^n\right)\quad\approx\quad \frac{\partial^2\ugen}{\partial x^2}\ .\label{eq:secondOrderSpace}
     \end{align}
 \end{subequations}
-Substituting these definitions into Eq. \eqref{eq:1dwave} yields the following finite-difference scheme (FDS)
+Substituting these definitions into Eq. \eqref{eq:1dwave} yields the following finite-difference (FD) scheme
 \begin{equation}\label{eq:FDS}
     \delta_{tt}\ugen_l^n = c^2 \delta_{xx}\ugen_l^n.
 \end{equation}
@@ -39,7 +39,7 @@ Here,
 \end{equation}
 is referred to as the Courant number, constrained by numerical stability conditions, and also has an impact on the quality and behaviour of the simulation. This will be described in detail in Sections \ref{sec:stability} and \ref{sec:quality}.
 
-In the FDS \SBcomment[Suggest chaging FDS globally to FDTD scheme or FD scheme, for consistency.]described in Eq. \eqref{eq:FDS}, the boundary locations are at $l = 0$ and $l = N$. Substituting these locations into Eq. \eqref{eq:updateEq} seemingly introduces the need of grid points outside of the defined domain, namely $\ugen_{-1}^n$ and $\ugen_{N+1}^n$. These can be referred to as \textit{virtual grid points} and can be accounted for using the boundary conditions in Eq. \eqref{eq:continuousBoundaries}. Discretising these yields
+In the FD scheme described in Eq. \eqref{eq:FDS}, the boundary locations are at $l = 0$ and $l = N$. Substituting these locations into Eq. \eqref{eq:updateEq} seemingly introduces the need of grid points outside of the defined domain, namely $\ugen_{-1}^n$ and $\ugen_{N+1}^n$. These can be referred to as \textit{virtual grid points} and can be accounted for using the boundary conditions in Eq. \eqref{eq:continuousBoundaries}. Discretising these yields
 \begin{subequations}
     \begin{align}
         \ugen_0^n = \ugen_N^n &= 0 \quad\text{(Dirichlet)}\label{eq:discreteDirichlet}\\
