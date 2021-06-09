@@ -46,14 +46,14 @@ In the following, the location of a grid point (in m from the left boundary) $q_
 Furthermore, some variables are now time dependent as indicated by superscript $n$. These are $c^n$, $h^n$, $\Nfrac^n$, $N^n$ and $f_0^n$.
 
 \subsubsection{System Setup}\label{sec:systSetup}
-Consider two grid functions, $u_\lu^n$ and $w_\lw^n$ defined over discrete domains $\lu \in \{0, \hdots, M^n\}$ and $\lw \in \{0, \hdots, M_w^n\}$ respectively with integers $M^n = \lceil 0.5N^n\rceil $ with $\lceil \cdot \rceil$ denoting the ceiling operation and $M_w^n = \lfloor 0.5N^n\rfloor$, i.e., half the number of points allowed by the stability condition, plus one for overlap. The two grid functions are assumed to lie adjacent to each other on the same domain $x$. For now, the grid locations $\lu = M^n$ \SBcomment[Actually $l_{u}^{n}$, right?] \SWcomment[hmm.. no I don't think so, as $l_u$ is only an element of a set (that changes size). (Also see the email I sent you.) I elaborated right below Eq. (22) that the $n$ in $M^n$ is unaffected by $\delta_{tt}$] and $\lw = 0$ are assumed to overlap so that $x_{u_{M^n}}^n = x_{w_0}^n = M^nh^n$, and are referred to as the inner boundaries. The grid locations $\lu = 0$ and $\lw = M_w^n$ are placed at $x_{u_0}^n = 0$ and $x_{w_{M_w^n}}^n = L$ and will be referred to as the outer boundaries. See Figure \ref{fig:twoFreeStrings}. The following boundary conditions are then imposed:
+Consider two grid functions, $u_\lu^n$ and $w_\lw^n$ defined over discrete domains $\lu \in \{0, \hdots, M^n\}$ and $\lw \in \{0, \hdots, M_w^n\}$ respectively with integers $M^n = \lceil 0.5N^n\rceil $ with $\lceil \cdot \rceil$ denoting the ceiling operation and $M_w^n = \lfloor 0.5N^n\rfloor$, i.e., half the number of points allowed by the stability condition, plus one for overlap. The two grid functions are assumed to lie adjacent to each other on the same domain $x$. For now, the grid locations $\lu = M^n$ and $\lw = 0$ are assumed to overlap so that $x_{u_{M^n}}^n = x_{w_0}^n = M^nh^n$, and are referred to as the inner boundaries. The grid locations $\lu = 0$ and $\lw = M_w^n$ are placed at $x_{u_0}^n = 0$ and $x_{w_{M_w^n}}^n = L$ and will be referred to as the outer boundaries. See Figure \ref{fig:twoFreeStrings}. The following boundary conditions are then imposed:
 \begin{subequations}\label{eq:halfStringBoundaryCond}
     \begin{align}
         u_0^n = w_{M_w^n}^n &= 0,\quad \text{(Dirichlet)}\label{eq:halfStringBoundaryCondDirichlet}\\
         \delta_{x\cdot}u_{M^n}^n = \delta_{x\cdot}w_0^n &= 0.\, \quad\text{(Neumann)}, \label{eq:halfStringBoundaryCondNeumann}
     \end{align}
 \end{subequations}
-In other words, grid points at the outer boundaries are fixed, according to the usual Dirichlet condition, and those at the inner boundaries are free. \SWcomment[***$\rightarrow$]It is important to note that the Neumann condition is just used as a starting point for the method here, but will be modified in Section \ref{sec:changingGrid}. \SWcomment[$\leftarrow$***]\SBcomment[OK, but then why indicate it at all? Can you not just say that the boundary conditions at the inner boundaries will be set shortly? The problem here is that if you impose these conditions, you have something kind of unphysical---string slope is always zero at the string midpoint! And then you need to undo this later...] \SWcomment[see email]
+In other words, grid points at the outer boundaries are fixed, according to the usual Dirichlet condition, and those at the inner boundaries are free. It is important to note that the Neumann condition is just used as a starting point for the method here, but will be modified in Section \ref{sec:changingGrid}.
 % \begin{figure}[h]
 % \centerline{\includegraphics[width=\columnwidth]{twoFreeStrings.eps} }
 % \caption{\label{fig:twoFreeStrings}{Two (1D wave) systems connected at one of their boundaries.}}
@@ -70,9 +70,6 @@ Notice that this condition only needs to be satisfied when the inner boundaries 
 To sum up, a grid function with $N$ intervals as per Eq. \eqref{eq:orderOfCalcGrid} is divided into two separate subsystems connected at their respective inner boundaries. %\SBcomment[OK...there is something strange here. You have defined three boundary conditions at the inner boundary (the two Neumann, plus the "connection". I'll have to read further, but something seems overdetermined here! As in, you have more conditions than you can satisfy with the scheme, as it is now. OK, wait, maybe this is solved by the fact that there's a "redundant" grid value at the overlap point...] %\SWcomment[The Neumann condition is a starting point to show that connecting two Neumann ends of the 1D waves with a rigid connection actually yields the ``original case''. This starting point can then be used as a basis to build the rest of the method on. Along those lines, the connection is not so much a boundary condition as it is a ``connection force'' acting between the two systems (like connecting the free ends of two bars together)]
 
 %\SWcomment[Ah I see now the confusion (I think), I clarified in the condition that the rigid connection only has to be satisfied when there is a perfect overlap and added a bit of text after.]
-
-\SWcomment[I added some ***$\rightarrow$<text> $\leftarrow$*** as additions to clarify the fact that I'm replacing the Neumann condition (and rigid connection) with the method. There is one right below (16b) and two below (26b).] 
-
 With the above boundary conditions imposed, the following state vectors can be defined:
 \begin{equation}
     % \begin{aligned}
@@ -87,7 +84,6 @@ with $T$ denoting the transpose operation, and have $M^n$ and $M_{w}^n$ points r
         \mathbf{w}^n
     \end{bmatrix}.
 \end{equation}
-\SBcomment[OK, so this big concatenated vector is also changing size at each time step?] \SWcomment[It changes size only when a point is added and removed, but yes, the maximum speed that this can happen for is 1 element added/removed per time step (but this too fast and will cause artefacts on its own).]
 %Note that the vectors in \eqref{eq:separateStateVectors} and \eqref{eq:fullState} also exist at the next ($n+1$) and previous ($n-1$) time indices. 
 
 Even though the new system has an extra (overlapping) grid point, the behaviour of the new system should be identical to that of the original system. That this holds will be shown below.
@@ -99,8 +95,6 @@ Using $u_\lu^n$ and $w_\lw^n$ in the context of the 1D wave equation, a system o
         \delta_{tt}w_\lw^n = (c^n)^2\delta_{xx}w_\lw^n - J_w(x_{w_0}^n)F^n
     \end{cases}
 \end{equation}
-
-\SBcomment[OK, here is where things start to get nasty. You have $\delta_{tt}u_{l_{u}}^{n}$ appearing. But really this should be $\delta_{tt}u_{l_{u}^{n}}^{n}$, shouldn't it? And then how does the operator $\delta_{tt}$ work in this case? Like, if $l_{u}^{n}$ is changing from one time step to the next?] \SWcomment[see email and comment at the beginning of Section \ref{sec:systSetup}.]
 with spreading operators
 \begin{equation}\label{eq:spreadingOperators}
     \begin{aligned}
@@ -153,7 +147,6 @@ which, (again, recalling Eq. \eqref{eq:rigid}) are indeed equivalent expressions
     \vspace{-1em}\caption{\it Illustration of the proposed method. In all figures, the x-axis shows the location of the respective grid points%(fx. $x_{u_l^n}$)
     , but `$x^n$' is omitted for brevity. (a) Locations of the states of two (1D wave) systems connected at the inner boundaries ($\Nfrac^n = 30$, $x_{u_{M^n}}^n = x_{w_0}^n$). (b) When $c^n$ -- and consequently $h^n$ -- are decreased and the positions of the grid points change ($\Nfrac^n = 30.5$, $x_{u_{M^n}}^n \neq x_{w_0}^n$). (c) Figure \ref{fig:twoFreeStringsGridMove} zoomed-in around the inner boundaries. The virtual grid points $u_{M^n+1}^n$ and $w_{-1}^n$ are shown together with the distance between them expressed using $\alpha$ in Eq. \eqref{eq:alphaDef}.}
 \end{figure}
-\SBcomment[OK, in the last panel of Figure 1, the distance between $u_{M}$ and $w_{0}$ looks like a full grid point...but is labelled as $\alpha = 1/2$, which I thought would be a half-grid point distance.] \SWcomment[It is! A gridpoint distance ($h$) is between two blue points or between two red points. This makes the distance between a blue and a red point $0.5h$ or $\alpha = 0.5$. I could make it 0.4 or 0.6 to avoid this confusion..]
 
 \subsubsection{Changing the Grid}\label{sec:changingGrid}
 The previous section describes the case in which $\Nfrac^n$ is an integer. % $x_{u_M}^n = x_{w_0}^n$. 
@@ -176,7 +169,7 @@ is defined as
 \begin{equation}\label{eq:alphaDef}
     \alpha = \alpha^n = \Nfrac^n - N^n %\frac{x^n_{w_0} - x^n_{u_M}}{h}\,,
 \end{equation}
-\SWcomment[keeping $\alpha$ without superscript for brevity by defining it like this (unless you think for consistency it should have the superscript anyway)] and for clarity, $I$ and $\mathbfcal{U}^n$ are indexed by $m$.
+and for clarity, $I$ and $\mathbfcal{U}^n$ are indexed by $m$.
 %\SWcomment[it's possible to skip until quadratic interpolation straight away from here, skipping the iterations] In the following, the distance between the inner boundaries normalised with $h$ is defined as
 % \begin{equation}\label{eq:alphaDef}
 %     \alpha = \alpha^n = \frac{x^n_{w_0} - x^n_{u_M}}{h}\,,
@@ -310,10 +303,10 @@ When applied to Eq. \eqref{eq:fullState} this yields the definitions for the vir
 %     \alpha_\text{I} u_{M-2}^n + \beta\text{I}u_{M-1}^n + \gamma u_{M}^n
 %     \end{bmatrix}.
 % \end{equation}
-\SWcomment[***$\rightarrow$] These definitions for the virtual grid points at the inner boundaries will replace the Neumann condition in Eq. \eqref{eq:halfStringBoundaryCondNeumann}.\SWcomment[$\leftarrow$***] %As will be shown in Section \ref{sec:results}, quadratic interpolation yields the expected fundamental frequency at all times. 
+These definitions for the virtual grid points at the inner boundaries will replace the Neumann condition in Eq. \eqref{eq:halfStringBoundaryCondNeumann}. %As will be shown in Section \ref{sec:results}, quadratic interpolation yields the expected fundamental frequency at all times. 
 One can show that when $\Nfrac^n$ is an integer, and thus $\alpha = 0$, Eqs. \eqref{eq:calcUMP1} and \eqref{eq:calcWM1} can be substituted as $w_1^n$ and $u_{M^n-1}^n$ into Eqs. \eqref{eq:resultUM} and \eqref{eq:resultw0} respectively (as these acted as virtual grid points $u_{M^n+1}^n$ and $w_{-1}^n$). Then recalling Eq. \eqref{eq:rigid} it can be seen that the system reduces to \eqref{eq:resultOneConnectedPoint} and exhibits the same exact behaviour as the normal case. % also when interpolation needs to happen.
 
-\SWcomment[***$\rightarrow$]Now that the virtual grid points at the inner boundaries are not determined by the Neumann boundary condition in \eqref{eq:halfStringBoundaryCondNeumann}, but rather by the definitions in Eqs. \eqref{eq:connectionInterpol}, system \eqref{eq:systemHalfStrings} can simply be re-written to
+Now that the virtual grid points at the inner boundaries are not determined by the Neumann boundary condition in \eqref{eq:halfStringBoundaryCondNeumann}, but rather by the definitions in Eqs. \eqref{eq:connectionInterpol}, system \eqref{eq:systemHalfStrings} can simply be re-written to
 \begin{equation}\label{eq:FDSwithMethod}
     \begin{cases}
         \delta_{tt}u_\lu^n = (c^n)^2\delta_{xx}u_\lu^n\\
@@ -324,7 +317,6 @@ where the Dirichlet condition in \eqref{eq:halfStringBoundaryCondDirichlet} is (
 \begin{equation}
         \!\!u_{M^n+1}^n = I_2^\flip(x_{u_{M^n+1}}^n)\mathbfcal{U}^n \quad \text{and}\quad w_{-1}^n = I_2(x_{w_{-1}}^n)\mathbfcal{U}^n.
 \end{equation}
-\SWcomment[$\leftarrow$***]
 % Rewriting system \eqref{eq:systemHalfStrings} to include the method yields 
 % \begin{equation}\label{eq:FDSwithMethod}
 %     \begin{cases}
@@ -420,7 +412,7 @@ and damping coefficient $\sigma_0$% (in s$^{-1}$)
 where $\varepsilon \ll 1$ prevents a division by 0. Despite the operators in \eqref{eq:centredOperators} introducing states at $n+1$, it is possible to calculate the force explicitly (such as in \cite{bilbao2009} or \cite{bilbao2009Dafx}). Furthermore, it can be shown that even when $\varepsilon = 0$ this calculation is always defined. In that case, as $\alpha \rightarrow 0$, $\beta\rightarrow \infty$ 
 %\MDcomment[I don't quite get this. Why do you need to divide by $\alpha$ in (35)?] \SWcomment[To get $\beta \rightarrow \infty$ as $\alpha \rightarrow 0$ :)] \MDcomment[Also how is $\varepsilon$ chosen?] \SWcomment[It is set to 0 in the implementation. Do you think I should exclude it and just elaborate on the fact that even when $\beta \rightarrow \infty$ the calculation is defined?] \MDcomment[And how is the connection rigid when $\alpha = 0$?  Shouldn't a rigid connection have $\beta \rightarrow \infty$ ] \SWcomment[but it does! As I say, when $\epsilon = 0$ and $\alpha = 0$, $\beta\rightarrow \infty$. $\beta$ is simply a function that goes ("asymptotically") from $0$ to $\infty$ as $\alpha$ goes from $1$ to $0$] 
 which acts as a rigid connection such as Eq. \eqref{eq:rigid}. Essentially, the displacement correction attempts to have $\eta^n\rightarrow 0$ in Eq. \eqref{eq:etaDispCorr} as $\alpha \rightarrow 0$ to satisfy the rigid connection in Eq. \eqref{eq:rigid}.
-Although the correction presented here is not based on some physical process, it can be justified by the fact that large differences in displacement between two spatially adjacent points is not physical. \SWcomment[$\leftarrow$ tried to justify]
+Although the correction presented here is not based on some physical process, it can be justified by the fact that large differences in displacement between two spatially adjacent points is not physical.
 
 Notice that when $c^n$ is decreased, the rigid connection will not be violated as $u_{M^n}^n \approx w_0^n$ when a point is added. This is due to the fact that $I_3\approx [0, 0, 1, 0]$ and either $u_{M^n}^n$ or $w_0^n$ is the newly added point which almost solely based on the other (for low-speed parameter variations).
 % \MDcomment[I have the feeling that this whole subsection is not very clear ... reviewers might jump on this, because there is no real justification for this extra spring system in here, outside of the fact that you hear artefacts and try to make up for it by adding this in. ] \SWcomment[I tried to justify at the beginning of \ref{sec:dispCorr} that differences in displacements while $\alpha \gtrsim 0$ violate the rigid connection and that this is a way to smoothly go towards this when increasing $c^n$. But I can see that this might not be enough. What do you propose? :)] \MDcomment[I don't know, it just looks strange that you need to do this. In fact, it's strange that you need two grids! Why not just work with one grid, where you fit the right boundary so to take into account the fractional grid spacing? Having two grids connected at the centre just sounds like a bit of a mess ...] \SWcomment[AHH entire method gone hahaha. No, been there, done that, unfortunately (as far as I know...). You can't do the quadratic interpolation then as you have too few points and you'll get weird behaviour with linear interpolation (as you might remember: modal crossings, opposite moving modal frequencies above $0.25 f_\text{s}$). And even there you'll need to "guide" the displacement of the grid point you're about to remove to the boundary value (which is 0 for Dirichlet) when decreasing $N$ as they will still have some "moment" or "inertia" from the $\delta_{tt}u$ term. In other words, right before removing a grid point, it will still be moving if it had earlier in the simulation, consequently, the Dirichlet boundary term will be violated, similar to how the rigid connection is violated here.\\
