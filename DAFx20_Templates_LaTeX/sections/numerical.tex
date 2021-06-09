@@ -85,7 +85,7 @@ This shows that the CFL condition in \eqref{eq:CFL} puts a lower bound on the gr
 \begin{equation}\label{eq:orderOfCalcGrid}
     h := ck,\ \ N := \left\lfloor\frac{L}{h}\right\rfloor, \ \ h := \frac{L}{N}, \ \ \lambda := \frac{ck}{h}.
 \end{equation}
-In other words, condition \eqref{eq:stabilityCond} is first satisfied with equality and used to calculate number of intervals $N$. Thereafter, $h$ is recalculated based on integer $N$ and used to calculate $\lambda$. The calculation of $\lambda$ in Eq. \eqref{eq:orderOfCalcGrid} can be compactly rewritten as
+where $\lfloor \cdot \rfloor$ denotes the flooring operation. In other words, condition \eqref{eq:stabilityCond} is first satisfied with equality and used to calculate number of intervals $N$. Thereafter, $h$ is recalculated based on integer $N$ and used to calculate $\lambda$. The calculation of $\lambda$ in Eq. \eqref{eq:orderOfCalcGrid} can be compactly rewritten as
 \begin{equation}\label{eq:compactLambda}
     \lambda = \frac{ck}{L}\cdot\left\lfloor\frac{L}{ck}\right\rfloor.
 \end{equation}

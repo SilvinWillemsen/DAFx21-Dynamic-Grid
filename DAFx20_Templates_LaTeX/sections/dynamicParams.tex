@@ -27,7 +27,7 @@ Usually when simulating musical instruments, the parameters of individual FDSs a
 % Using FDTD methods, one uses a discrete set number of points making it hard to transition from one setting to the next.
 In a discrete setting, several aspects need to be taken into account as $c$ changes. First of all, a change in $c$ causes a change in $\lambda$ according to Eq. \eqref{eq:compactLambda}, affecting the simulation quality and bandwidth. Secondly, and more importantly, a change in $c$ could result in a change in $N$ through Eq. \eqref{eq:numberOfIntervals}. As $N$ directly relates to the number of grid points, this raises questions as to \textit{where} and especially \textit{how} one would add and remove points to the grid according to the now-dynamic wave speed.
 
-As mentioned in the introduction, one method that could be used to go from one grid configuration to the next is full-grid interpolation as described in \cite[Chap. 5]{bilbao2009}. However, this method essentially has a lowpassing effect on the entire system state every time $N$ is changed and can cause artefacts in the output sound due to the interpolation. A (much) higher sample rate could be used to avoid these issues, but this would render this method impossible to work in real time.
+As mentioned in the introduction, one method that could be used to go from one grid configuration to the next is full-grid interpolation as described in \cite[Chap. 5]{bilbao2009}. However, this method essentially has a lowpassing effect on the entire system state every time $N$ is changed and can cause artifacts in the output sound due to the interpolation. A (much) higher sample rate could be used to avoid these issues, but this would render this method impossible to work in real time.
 
 Another solution could be to set and fix $N$ at the beginning of the simulation and `tune' $c$ away from the stability condition by decreasing it, such as done in \cite{Willemsen2019}. This would avoid problems with stability, as decreasing $c$ would continue to satisfy condition \eqref{eq:CFL}, but the simulation would end up with lower quality, exhibiting dispersive and bandlimiting effects as discussed in Section \ref{sec:quality}. In essence, decreasing the value of $c$ immediately translates to decreasing the value of $\lambda$ as $h$ and $k$ are left unchanged. On top of this, $c$ is limited by Eq. \eqref{eq:stabilityCond} and increasing it beyond a certain value would render the system unstable.
 
@@ -37,7 +37,7 @@ To circumvent the aforementioned undesirable effects, we want to allow the numbe
 \end{equation}
 This shows that if $\lambda = 1$, $\Nfrac$,  determines the fundamental frequency of the simulation. 
 
-Even if a fractional $N$ would be possible, this still leaves the question of where and how to add and remove points to and from the grid. Furthermore, this change in grid size needs to happen in a smooth fashion in order not to create audible artefacts. 
+Even if a fractional $N$ would be possible, this still leaves the question of where and how to add and remove points to and from the grid. Furthermore, this change in grid size needs to happen in a smooth fashion in order not to create audible artifacts. 
 %. To implement a physical model with dynamic parameters and an optimal simulation quality at all times,
 We propose a method that allows for a fractional number of intervals $\Nfrac$ and smoothly changes grid configurations, i.e, the number of grid points. %The following section describes the requirements for such a method to successfully do this.
 
