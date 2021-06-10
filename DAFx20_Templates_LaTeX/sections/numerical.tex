@@ -1,5 +1,5 @@
 \section{Numerical methods}\label{sec:FDTD}
-This section will provide a brief introduction to physical modelling using FDTD methods, including details on stability and quality of the simulations based on these methods. In the following, $c$ is assumed constant.
+This section will provide a brief introduction to physical modelling using FDTD methods, including details on stability and quality of the simulations based on these methods. In this section, $c$ is assumed constant.
 
 \subsection{Discretisation}
 In FDTD methods, the first step is the definition of a grid. The spatial variable can be discretised using $x_l = lh$ %(read: $x$ at spatial index $l$) 
@@ -29,7 +29,7 @@ Substituting these definitions into Eq. \eqref{eq:1dwave} yields the following f
 Expanding the operators as in %the Eqs. in
 \eqref{eq:operators} and solving for $\ugen_l^{n+1}$ yields the following update equation
 \begin{equation}\label{eq:updateEq}
-    \ugen_l^{n+1} = 2\ugen_l^n-\ugen_l^{n-1} + \lambda^2 \left(\ugen_{l+1}^n-2\ugen_l^n + \ugen_{l-1}^n\right).
+    \ugen_l^{n+1} = 2\ugen_l^n-\ugen_l^{n-1} + \lambda^2 \left(\ugen_{l+1}^n-2\ugen_l^n + \ugen_{l-1}^n\right),
 \end{equation}
 %saying that $\ugen$ at the next time index ($n+1$) can be calculated using only values of $\ugen$ at the current ($n$) and previous time indices ($n-1$).
 which is suitable for direct software implementation. %This update can then be implemented in software, such as {\tt MATLAB} or {\tt C++}. 
@@ -42,8 +42,8 @@ is referred to as the Courant number, constrained by numerical stability conditi
 In the FD scheme described in Eq. \eqref{eq:FDS}, the boundary locations are at $l = 0$ and $l = N$. Substituting these locations into Eq. \eqref{eq:updateEq} seemingly introduces the need of grid points outside of the defined domain, namely $\ugen_{-1}^n$ and $\ugen_{N+1}^n$. These can be referred to as \textit{virtual grid points} and can be accounted for using the boundary conditions in Eq. \eqref{eq:continuousBoundaries}. Discretising these yields
 \begin{subequations}
     \begin{align}
-        \ugen_0^n = \ugen_N^n &= 0 \quad\text{(Dirichlet)}\label{eq:discreteDirichlet}\\
-        \delta_{x\cdot} \ugen_0^n = \delta_{x\cdot} \ugen_N^n &= 0 \quad \text{(Neumann)}\label{eq:discreteNeumann}
+        \ugen_0^n = \ugen_N^n &= 0, \quad\text{(Dirichlet)}\label{eq:discreteDirichlet}\\
+        \delta_{x\cdot} \ugen_0^n = \delta_{x\cdot} \ugen_N^n &= 0, \quad \text{(Neumann)}\label{eq:discreteNeumann}
     \end{align}
 \end{subequations}
 where 
@@ -83,7 +83,7 @@ Recalling \eqref{eq:lambdaDef}, Eq. \eqref{eq:CFL} can be rewritten in terms of 
 \end{equation}
 This shows that the CFL condition in \eqref{eq:CFL} puts a lower bound on the grid spacing, determined by the sample rate and wave speed. Usually, the following steps are taken to calculate $\lambda$:
 \begin{equation}\label{eq:orderOfCalcGrid}
-    h := ck,\ \ N := \left\lfloor\frac{L}{h}\right\rfloor, \ \ h := \frac{L}{N}, \ \ \lambda := \frac{ck}{h}.
+    h := ck,\ \ N := \left\lfloor\frac{L}{h}\right\rfloor, \ \ h := \frac{L}{N}, \ \ \lambda := \frac{ck}{h},
 \end{equation}
 where $\lfloor \cdot \rfloor$ denotes the flooring operation. In other words, condition \eqref{eq:stabilityCond} is first satisfied with equality and used to calculate number of intervals $N$. Thereafter, $h$ is recalculated based on integer $N$ and used to calculate $\lambda$. The calculation of $\lambda$ in Eq. \eqref{eq:orderOfCalcGrid} can be compactly rewritten as
 \begin{equation}\label{eq:compactLambda}

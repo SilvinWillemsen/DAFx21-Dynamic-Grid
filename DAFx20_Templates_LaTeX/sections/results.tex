@@ -99,7 +99,7 @@ less as $\Nfrac^n$ increases. %The maximum deviation for the highest mode number
 Experiments with higher even-ordered Lagrange interpolators show that these frequency deviations become smaller, but not by a substantial amount. The quadratic interpolator has thus been chosen for being simpler and more flexible while not being substantially worse than higher order interpolators.
 
 Another observation from Figure \ref{fig:modalAnalysis} is that there are always $N^n$ modes present, corresponding to the number of moving points of the system. As can be seen in Figure \ref{fig:spectrogram} the highest mode is not excited. If the system is excited when $\Nfrac^n$ is not an integer, the highest mode will also be excited.
-Comparing the implementation of the system using this method with integer $\Nfrac^n$ (without changing $c^n$) to a normal implementation of the 1D wave equation (shown in Section \ref{sec:FDTD}) with $N^n = \Nfrac^n$, identical outputs are observed, even though the latter has $N^n-1$ moving points.
+Comparing the implementation of the system using this method with integer $\Nfrac^n$ (without changing $c^n$) to a normal implementation of the 1D wave equation (shown in Section \ref{sec:FDTD}) with (static) $N^n = \Nfrac^n$, identical outputs are observed, even though the latter has $N^n-1$ moving points.
 
 % Using the quadratic interpolation from \eqref{eq:connectionInterpol}, or any other even-ordered Lagrange interpolator for that matter, the modal frequencies of the system do not change based on location. Experiments done with odd-ordered Lagrange interpolators showed that better behaviour is observed when points are added / removed closer to the boundaries. 
 

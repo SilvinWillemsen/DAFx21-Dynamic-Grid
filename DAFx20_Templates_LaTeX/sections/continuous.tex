@@ -22,7 +22,7 @@ and describe `fixed' or `free' boundary respectively in the case of an ideal str
 \subsection{Dynamic parameters}\label{sec:dynamicParamsCont}
 In the case of the 1D wave equation, only the wave speed $c$ and length $L$ can be altered (in the case of an acoustic tube, only $L$ is variable, and for a string, $c$ could exhibit variations through changes in tension). If the same boundary condition is used at both ends of the domain, and under static conditions, the fundamental frequency $f_0$ of vibration can be calculated according to
 \begin{equation}\label{eq:fundamentalFreqCont}
-    f_0 = \frac{c}{2L}.
+    f_0 = \frac{c}{2L}\ .
 \end{equation}
 In the dynamic case, and under slow (sub-audio rate) variations of $c$ or $L$, Eq. \eqref{eq:fundamentalFreqCont} still holds approximately.
 % \SBcomment[OK, but this notion of a frequency is only true under static conditions...kind of confusing] \SWcomment[Is it? It should be true for the dynamic case as well right?]\SBcomment[Well, I guess under slow variations, you can sort of say that there are still modes...but in general once you have time varying behaviour, you lose the ability to do Fourier analysis easily, and the modal analysis is not strictly correct] \SWcomment[Hmm.. but if this is true for any static combination of $c$ and $L$ (which it is right?) wouldn't it be true for the dynamic case as well?]\SBcomment[No way. It's approximately true for sub-audio rate variation in $c$. But once the variation gets higher, you will start to see AM effects (sidebands!).All modal analysis requires LTI behaviour. You can say that if the rate of variation of $c$ is sufficiently slow, then the modal frequencies above are approximately valid... ] \SWcomment[Ah of course, gotcha!]

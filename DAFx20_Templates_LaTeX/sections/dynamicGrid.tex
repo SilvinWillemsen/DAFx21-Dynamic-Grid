@@ -86,13 +86,13 @@ with $T$ denoting the transpose operation, and have $M^n$ and $M_{w}^n$ points r
 \end{equation}
 %Note that the vectors in \eqref{eq:separateStateVectors} and \eqref{eq:fullState} also exist at the next ($n+1$) and previous ($n-1$) time indices. 
 
-Even though the new system has an extra (overlapping) grid point, the behaviour of the new system should be identical to that of the original system. That this holds will be shown below.
+Even though the new system has an extra (overlapping) grid point, the behaviour of the new system should be identical to that of the original system in Eq. \eqref{eq:FDS} with (static) $\Nfrac^n = N^n$. That this holds will be shown below.
 
 Using $u_\lu^n$ and $w_\lw^n$ in the context of the 1D wave equation, a system of FD schemes can be defined as
 \begin{equation}
     \begin{cases}\label{eq:systemHalfStrings}
-        \delta_{tt}u_\lu^n = (c^n)^2\delta_{xx}u_\lu^n + J_u(x_{u_{M^n}}^n)F^n\\
-        \delta_{tt}w_\lw^n = (c^n)^2\delta_{xx}w_\lw^n - J_w(x_{w_0}^n)F^n
+        \delta_{tt}u_\lu^n = (c^n)^2\delta_{xx}u_\lu^n + J_u(x_{u_{M^n}}^n)F^n,\\
+        \delta_{tt}w_\lw^n = (c^n)^2\delta_{xx}w_\lw^n - J_w(x_{w_0}^n)F^n,
     \end{cases}
 \end{equation}
 with spreading operators
@@ -117,11 +117,11 @@ $F^n$ (in m$^2/$s$^2$) to grid points $u_{M^n}^n$ and $w_0^n$ respectively.
 Expanding the spatial operators in system \eqref{eq:systemHalfStrings} at the inner boundaries, recalling the Neumann condition in  \eqref{eq:halfStringBoundaryCondNeumann} and the definition for the virtual grid points needed for this condition in Eq. \eqref{eq:neumannSolution} yields
 \begin{equation}\label{eq:expandedSystem}
     \begin{cases}
-        \delta_{tt}u_{M^n}^n = \frac{\lambda^2}{k^2}(2u_{M^n-1}^n-2u_{M^n}^n) + \frac{1}{h^n}F^n\\
+        \delta_{tt}u_{M^n}^n = \frac{\lambda^2}{k^2}(2u_{M^n-1}^n-2u_{M^n}^n) + \frac{1}{h^n}F^n,\\
         \delta_{tt}w_0^n = \frac{\lambda^2}{k^2}(2w_1^n-2w_0^n) - \frac{1}{h^n}F^n.
     \end{cases}
 \end{equation}
-It is important to note that the time index $n$ in $M^n$ will not be affected by the $\delta_{tt}$ operator and all obtained terms after expansion (Eq. \eqref{eq:secondOrderTime}) will use the same value for $M^n$. Because of the rigid connection in \eqref{eq:rigid}, it is also true that $\delta_{tt}u_{M^n}^n = \delta_{tt}w_0^n$ if $x_{u_{M^n}}^n = x_{w_0}^n$, and $F^n$ can be calculated by setting the right side of the equations in \eqref{eq:expandedSystem} equal to each other:
+It is important to note that the time index $n$ in $M^n$ will not be affected by the $\delta_{tt}$ operator and all obtained terms after expansion (Eq. \eqref{eq:secondOrderTime}) will use the same value for $M^n$. Because of the rigid connection in \eqref{eq:rigid}, it is also true that $\delta_{tt}u_{M^n}^n = \delta_{tt}w_0^n$ (if $x_{u_{M^n}}^n = x_{w_0}^n$), and $F^n$ can be calculated by setting the right side of the equations in \eqref{eq:expandedSystem} equal to each other:
 \begin{align*}
      \frac{\lambda^2}{k^2}(2u_{M^n-1}^n-2u_{M^n}^n) + \frac{1}{h^n} F^n&= 
     \frac{\lambda^2}{k^2}(2w_1^n-2w_0^n) - \frac{1}{h^n} F^n,\nonumber\\
@@ -131,11 +131,11 @@ It is important to note that the time index $n$ in $M^n$ will not be affected by
 Substituting this into system \eqref{eq:expandedSystem} after expansion of the second-time derivative yields the update of the inner boundaries
 % \begin{equation}
 \begin{subnumcases}{\!\!\!\!\!\!\!\!\!\!\!\label{eq:resultOneConnectedPoint}}
-    \!\!\!u^{n+1}_{M^n} = 2u_{M^n}^n - u_{M^n}^{n-1} + \lambda^2(u_{M^n-1}^n-2u_{M^n}^n+w_1^n)\label{eq:resultUM}\\
-    \!\!\!w^{n+1}_0 = 2w_0^n - w_0^{n-1} + \lambda^2(u_{M^n-1}^n-2w_0^n+w_1^n)\label{eq:resultw0}
+    \!\!\!u^{n+1}_{M^n} = 2u_{M^n}^n - u_{M^n}^{n-1} + \lambda^2(u_{M^n-1}^n-2u_{M^n}^n+w_1^n),\label{eq:resultUM}\\
+    \!\!\!w^{n+1}_0 = 2w_0^n - w_0^{n-1} + \lambda^2(u_{M^n-1}^n-2w_0^n+w_1^n),\label{eq:resultw0}
 \end{subnumcases}
 % \end{equation}
-which, (again, recalling Eq. \eqref{eq:rigid}) are indeed equivalent expressions for the connected point which is necessary to satisfy the rigid connection. System \eqref{eq:systemHalfStrings} can be shown to exhibit behaviour identical to that of the original scheme in Eq. \eqref{eq:FDS} using the same $N$. In \eqref{eq:resultOneConnectedPoint}, $w_1^n$ in Eq. \eqref{eq:resultUM} acts as virtual grid point $u_{M^n+1}^n$, and $u_{M^n-1}^n$ in \eqref{eq:resultw0} as virtual grid point $w_{-1}^n$%, essentially connecting the two systems using the state of one in the update of the other
+which, (again, recalling Eq. \eqref{eq:rigid}) are indeed equivalent expressions for the connected point which is necessary to satisfy the rigid connection. System \eqref{eq:systemHalfStrings} can be shown to exhibit behaviour identical to that of the original scheme in Eq. \eqref{eq:FDS} using (static) $\Nfrac^n = N^n$. In \eqref{eq:resultOneConnectedPoint}, $w_1^n$ in Eq. \eqref{eq:resultUM} acts as virtual grid point $u_{M^n+1}^n$, and $u_{M^n-1}^n$ in \eqref{eq:resultw0} as virtual grid point $w_{-1}^n$%, essentially connecting the two systems using the state of one in the update of the other
 . This important fact is what the proposed method relies on and will be extensively used in the following.
 
 \def\figwidth{0.99}
@@ -167,7 +167,7 @@ As mentioned in Section \ref{sec:systSetup}, the state of the virtual grid point
 In the following, the fractional part of $\Nfrac^n$ %distance between the inner boundaries normalised by $h$ 
 is defined as 
 \begin{equation}\label{eq:alphaDef}
-    \alpha = \alpha^n = \Nfrac^n - N^n %\frac{x^n_{w_0} - x^n_{u_M}}{h}\,,
+    \alpha = \alpha^n = \Nfrac^n - N^n, %\frac{x^n_{w_0} - x^n_{u_M}}{h}\,,
 \end{equation}
 and for clarity, $I$ and $\mathbfcal{U}^n$ are indexed by $m$.
 %\SWcomment[it's possible to skip until quadratic interpolation straight away from here, skipping the iterations] In the following, the distance between the inner boundaries normalised with $h$ is defined as
@@ -304,13 +304,13 @@ When applied to Eq. \eqref{eq:fullState} this yields the definitions for the vir
 %     \end{bmatrix}.
 % \end{equation}
 These definitions for the virtual grid points at the inner boundaries will replace the Neumann condition in Eq. \eqref{eq:halfStringBoundaryCondNeumann}. %As will be shown in Section \ref{sec:results}, quadratic interpolation yields the expected fundamental frequency at all times. 
-One can show that when $\Nfrac^n$ is an integer, and thus $\alpha = 0$, Eqs. \eqref{eq:calcUMP1} and \eqref{eq:calcWM1} can be substituted as $w_1^n$ and $u_{M^n-1}^n$ into Eqs. \eqref{eq:resultUM} and \eqref{eq:resultw0} respectively (as these acted as virtual grid points $u_{M^n+1}^n$ and $w_{-1}^n$). Then recalling Eq. \eqref{eq:rigid} it can be seen that the system reduces to \eqref{eq:resultOneConnectedPoint} and exhibits the same exact behaviour as the normal case. % also when interpolation needs to happen.
+One can show that when $\Nfrac^n$ is an integer, and thus $\alpha = 0$, Eqs. \eqref{eq:calcUMP1} and \eqref{eq:calcWM1} can be substituted as $w_1^n$ and $u_{M^n-1}^n$ into Eqs. \eqref{eq:resultUM} and \eqref{eq:resultw0} respectively (as these acted as virtual grid points $u_{M^n+1}^n$ and $w_{-1}^n$). Then recalling Eq. \eqref{eq:rigid} it can be seen that the system reduces to \eqref{eq:resultOneConnectedPoint} and exhibits the same exact behaviour as the usual case in Eq. \eqref{eq:FDS}. % also when interpolation needs to happen.
 
 Now that the virtual grid points at the inner boundaries are not determined by the Neumann boundary condition in \eqref{eq:halfStringBoundaryCondNeumann}, but rather by the definitions in Eqs. \eqref{eq:connectionInterpol}, system \eqref{eq:systemHalfStrings} can simply be re-written to
 \begin{equation}\label{eq:FDSwithMethod}
     \begin{cases}
-        \delta_{tt}u_\lu^n = (c^n)^2\delta_{xx}u_\lu^n\\
-        \delta_{tt}w_\lw^n = (c^n)^2\delta_{xx}w_\lw^n
+        \delta_{tt}u_\lu^n = (c^n)^2\delta_{xx}u_\lu^n,\\
+        \delta_{tt}w_\lw^n = (c^n)^2\delta_{xx}w_\lw^n,
     \end{cases}
 \end{equation}
 where the Dirichlet condition in \eqref{eq:halfStringBoundaryCondDirichlet} is (still) used for the outer boundaries and the Neumann condition at the inner boundaries in \eqref{eq:halfStringBoundaryCondNeumann} is replaced by the definitions in \eqref{eq:connectionInterpol}:
@@ -330,10 +330,10 @@ where the Dirichlet condition in \eqref{eq:halfStringBoundaryCondDirichlet} is (
 When $c^n$, and consequently $h^n$, are decreased and the inner boundary points surpass the virtual points (i.e. $x_{u_{M^n}}^n \leq x_{w_{-1}}^n$ and $x_{w_0}^n \geq x_{u_{M^n+1}}^n$), this means that $N^n >  N^{n-1}$. A point is then added to the right boundary of $u$ and the left boundary of $w$ (for both time indices $n$ and $n-1$) in an alternating fashion: 
 \begin{equation}\label{eq:addingPoint}
         \begin{cases}\mathbf{u}^n = [(\mathbf{u}^n)^T, I_3\mathbf{v}^n]^T & \text{if $N^n $ is odd},\\
-        \mathbf{w}^n = [I_3^\flip\mathbf{v}^n, (\mathbf{w}^n)^T]^T & \text{if $ N^n$ is even},
+        \mathbf{w}^n = [I_3^\flip\mathbf{v}^n, (\mathbf{w}^n)^T]^T & \text{if $ N^n$ is even}.
         \end{cases}
 \end{equation}
-where 
+Here, 
 \begin{align*}
 \mathbf{v}^n = [u_{M^n-1}^n, u_{M^n}^n, w_0^n, w_1^n]^T,% \quad\text{and}\\
 %     \mathbf{v}_\star^n &= [w_1^n, w_0^n, u_M^n, u_{M-1}^n],
@@ -396,7 +396,7 @@ Using centred temporal averaging and difference operators
 the correction effect %(in m$^2/$s$^2$) 
 is defined as %\SWcomment[something off with the units here. I think I took this from the scaled version and assumed that $J$ has units of m$^{-1}$ (due to $1/h$).] is modelled as a spring-like connection and is defined as
 \begin{equation}\label{eq:dispCorrForce}
-    F_\text{c}^n = \beta \left(\mu_{t\cdot}\eta^n +\sigma_0\delta_{t\cdot}\eta^n \right).
+    F_\text{c}^n = \beta \left(\mu_{t\cdot}\eta^n +\sigma_0\delta_{t\cdot}\eta^n \right),
 \end{equation}
 %\MDcomment[It seems that $\omega_0$ is somewhat redundant here.] \SWcomment[Actually, I did that for the units to add up (didn't have it before, as it is only the ratio between $\omega_0^2$ and $\sigma_0$ that matters..). As I plan to take away the units (since it's an arbitrary connection) should I remove it you think?] \MDcomment[Also, why multiply $\sigma_0$ by $\beta$? ... not very clear.] \SWcomment[$\beta$ simply scales the entire correction effect. Apart from force, I don't want there to be much damping effect when $\alpha$ is not close to 0 either.] 
 with the difference in displacement between the inner boundaries
@@ -414,7 +414,7 @@ where $\varepsilon \ll 1$ prevents a division by 0. Despite the operators in \eq
 which acts as a rigid connection such as Eq. \eqref{eq:rigid}. Essentially, the displacement correction attempts to have $\eta^n\rightarrow 0$ in Eq. \eqref{eq:etaDispCorr} as $\alpha \rightarrow 0$ to satisfy the rigid connection in Eq. \eqref{eq:rigid}.
 Although the correction presented here is not based on some physical process, it can be justified by the fact that large differences in displacement between two spatially adjacent points is not physical.
 
-Notice that when $c^n$ is decreased, the rigid connection will not be violated as $u_{M^n}^n \approx w_0^n$ when a point is added. This is due to the fact that $I_3\approx [0, 0, 1, 0]$ and either $u_{M^n}^n$ or $w_0^n$ is the newly added point which almost solely based on the other (for low-speed parameter variations).
+Notice that when $c^n$ is decreased, the rigid connection will not be violated as $u_{M^n}^n \approx w_0^n$ when a point is added. This is due to the fact that $I_3\approx [0, 0, 1, 0]$ and either $u_{M^n}^n$ or $w_0^n$ is the newly added point which almost solely based on the other.
 % \MDcomment[I have the feeling that this whole subsection is not very clear ... reviewers might jump on this, because there is no real justification for this extra spring system in here, outside of the fact that you hear artifacts and try to make up for it by adding this in. ] \SWcomment[I tried to justify at the beginning of \ref{sec:dispCorr} that differences in displacements while $\alpha \gtrsim 0$ violate the rigid connection and that this is a way to smoothly go towards this when increasing $c^n$. But I can see that this might not be enough. What do you propose? :)] \MDcomment[I don't know, it just looks strange that you need to do this. In fact, it's strange that you need two grids! Why not just work with one grid, where you fit the right boundary so to take into account the fractional grid spacing? Having two grids connected at the centre just sounds like a bit of a mess ...] \SWcomment[AHH entire method gone hahaha. No, been there, done that, unfortunately (as far as I know...). You can't do the quadratic interpolation then as you have too few points and you'll get weird behaviour with linear interpolation (as you might remember: modal crossings, opposite moving modal frequencies above $0.25 f_\text{s}$). And even there you'll need to "guide" the displacement of the grid point you're about to remove to the boundary value (which is 0 for Dirichlet) when decreasing $N$ as they will still have some "moment" or "inertia" from the $\delta_{tt}u$ term. In other words, right before removing a grid point, it will still be moving if it had earlier in the simulation, consequently, the Dirichlet boundary term will be violated, similar to how the rigid connection is violated here.\\
 % One moving point with the proposed method is as close to adding / removing at the boundary as you'll get (as I describe in Section \ref{sec:addRemove}) and with a large system, this is basically the same as doing it at the boundary ;) I hope this all makes sense..]
 % \MDcomment[It's just really strange that you are saying that (17) is valid $\forall$ n, when in fact in Fig 1 the points are far apart ... and here in 4.1.4 you are in fact saying that these points are not going to be equal. What is the point of introducing (17) then if you are going to have them connected with a spring? It seems that (17) is never really implemented ...
@@ -442,13 +442,13 @@ The grid points at the inner boundaries are calculated by expanding \eqref{eq:FD
 \begin{subequations}\label{eq:innerboundariesExpanded}
     \begin{align}
         u_{M^n}^{n+1} &= u_{{M^n}+1}^n + u_{{M^n}-1}^n - u_{M^n}^{n-1},\\
-        w_0^{n+1} &= w_{-1}^n + w_{1}^n - w_0^{n-1}.
+        w_0^{n+1} &= w_{-1}^n + w_{1}^n - w_0^{n-1},
     \end{align}
 \end{subequations}
 %
 where virtual grid points $u_{{M^n}+1}^n$ and $w_{-1}^n$ can be calculated using Eq. \eqref{eq:connectionInterpol}.
 
-Then, when $ N^n > N^{n-1}$ a point is added to $\mathbf{u}^n$ and $\mathbf{u}^{n-1}$ (or $\mathbf{w}^n$ and $\mathbf{w}^{n-1}$) using Eq. \eqref{eq:addingPoint}, and when $ N^n  < N^{n-1}$ a point is removed from the same vectors using Eq. \eqref{eq:removingPoint}. In order to prevent audible artifacts when increasing $c^n$ (and thus decreasing $\Nfrac^n$) due to a violation of the rigid connection in \eqref{eq:rigid}, a method in \eqref{eq:sysDispCorr} is proposed to ensure that the grid points at the inner boundaries have a similar displacement when one of them is removed. 
+Then, when $ N^n > N^{n-1}$, a point is added to $\mathbf{u}^n$ and $\mathbf{u}^{n-1}$ (or $\mathbf{w}^n$ and $\mathbf{w}^{n-1}$) using Eq. \eqref{eq:addingPoint}, and when $ N^n  < N^{n-1}$, a point is removed from the same vectors using Eq. \eqref{eq:removingPoint}. In order to prevent audible artifacts when increasing $c^n$ (and thus decreasing $\Nfrac^n$) due to a violation of the rigid connection in \eqref{eq:rigid}, a method is proposed in Eq. \eqref{eq:sysDispCorr} to ensure that the grid points at the inner boundaries have a similar displacement when one of them is removed. 
 
 % \MDcomment[I think it would be a lot cleaner if you wrote down the form of $Dxx$ and therefore gave a FD equivalent of (1). For the same reason, it would be better to stick to $\bf q$ for notation. So, you could have $\delta_{tt} {\bf Q}^n = c^n {\bf D}_{xx}{\bf Q}^n$] \SWcomment[Hmm.. but $\mathbf{D}_{xx}$ does not work here due to all the additional stuff (interpolation, displacement correction) right?] \MDcomment[You can definitely define a Dxx operator that includes all that, depending on alpha, beta, etc] \SWcomment[Actually, now that I don't do the modal analysis stuff in detail anymore I can just remove the matrixforms here (will also save some space) $\rightarrow$]
 % Finally, using $\mathbfcal{U}$ from Eq. \eqref{eq:fullState} the total system can be compactly written in matrix form as
